@@ -1,0 +1,29 @@
+# Data — never commit raw datasets (size + license terms)
+data/
+*.pkl
+*.csv
+*.h5
+*.npz
+*.npy
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Model artifacts / logs
+*.keras
+*.h5
+checkpoints/
+logs/
+runs/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
