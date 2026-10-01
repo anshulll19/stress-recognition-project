@@ -1,0 +1,460 @@
+{
+  "data_dir": "D:\\WESAD",
+  "label_transition_rule": "majority",
+  "expected_subjects": [
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "S9",
+    "S10",
+    "S11",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S17"
+  ],
+  "subjects_found_on_disk": [
+    "S10",
+    "S11",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S17",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "S9"
+  ],
+  "subjects_missing_from_disk": [],
+  "note_on_missing_subjects": "S1 and S12 are expected to be absent from WESAD itself (dataset quirk, not corruption). Any OTHER subject missing from 'subjects_found_on_disk' above was not present in --data_dir and should be checked (extraction issue / incomplete download).",
+  "subjects_processed_ok": [
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "S9",
+    "S10",
+    "S11",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S17"
+  ],
+  "subjects_excluded": [],
+  "per_subject_detail": [
+    {
+      "subject": "S2",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 110,
+      "output_array_shape": [
+        110,
+        3840
+      ],
+      "bvp_length_samples": 389056,
+      "bvp_duration_sec": 6079.0,
+      "label_length_samples": 4255300,
+      "label_duration_sec": 6079.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S3",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 117,
+      "output_array_shape": [
+        117,
+        3840
+      ],
+      "bvp_length_samples": 415552,
+      "bvp_duration_sec": 6493.0,
+      "label_length_samples": 4545100,
+      "label_duration_sec": 6493.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S4",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 116,
+      "output_array_shape": [
+        116,
+        3840
+      ],
+      "bvp_length_samples": 411072,
+      "bvp_duration_sec": 6423.0,
+      "label_length_samples": 4496100,
+      "label_duration_sec": 6423.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S5",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 113,
+      "output_array_shape": [
+        113,
+        3840
+      ],
+      "bvp_length_samples": 400512,
+      "bvp_duration_sec": 6258.0,
+      "label_length_samples": 4380600,
+      "label_duration_sec": 6258.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S6",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 128,
+      "output_array_shape": [
+        128,
+        3840
+      ],
+      "bvp_length_samples": 452544,
+      "bvp_duration_sec": 7071.0,
+      "label_length_samples": 4949700,
+      "label_duration_sec": 7071.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S7",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 95,
+      "output_array_shape": [
+        95,
+        3840
+      ],
+      "bvp_length_samples": 335232,
+      "bvp_duration_sec": 5238.0,
+      "label_length_samples": 3666600,
+      "label_duration_sec": 5238.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S8",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 99,
+      "output_array_shape": [
+        99,
+        3840
+      ],
+      "bvp_length_samples": 349824,
+      "bvp_duration_sec": 5466.0,
+      "label_length_samples": 3826200,
+      "label_duration_sec": 5466.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S9",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 94,
+      "output_array_shape": [
+        94,
+        3840
+      ],
+      "bvp_length_samples": 334272,
+      "bvp_duration_sec": 5223.0,
+      "label_length_samples": 3656100,
+      "label_duration_sec": 5223.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S10",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 99,
+      "output_array_shape": [
+        99,
+        3840
+      ],
+      "bvp_length_samples": 351744,
+      "bvp_duration_sec": 5496.0,
+      "label_length_samples": 3847200,
+      "label_duration_sec": 5496.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S11",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 95,
+      "output_array_shape": [
+        95,
+        3840
+      ],
+      "bvp_length_samples": 334912,
+      "bvp_duration_sec": 5233.0,
+      "label_length_samples": 3663100,
+      "label_duration_sec": 5233.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S13",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 100,
+      "output_array_shape": [
+        100,
+        3840
+      ],
+      "bvp_length_samples": 354368,
+      "bvp_duration_sec": 5537.0,
+      "label_length_samples": 3875900,
+      "label_duration_sec": 5537.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S14",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 100,
+      "output_array_shape": [
+        100,
+        3840
+      ],
+      "bvp_length_samples": 355072,
+      "bvp_duration_sec": 5548.0,
+      "label_length_samples": 3883600,
+      "label_duration_sec": 5548.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S15",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 95,
+      "output_array_shape": [
+        95,
+        3840
+      ],
+      "bvp_length_samples": 336128,
+      "bvp_duration_sec": 5252.0,
+      "label_length_samples": 3676400,
+      "label_duration_sec": 5252.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S16",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 102,
+      "output_array_shape": [
+        102,
+        3840
+      ],
+      "bvp_length_samples": 360384,
+      "bvp_duration_sec": 5631.0,
+      "label_length_samples": 3941700,
+      "label_duration_sec": 5631.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    },
+    {
+      "subject": "S17",
+      "status": "ok",
+      "reason": "",
+      "n_windows": 107,
+      "output_array_shape": [
+        107,
+        3840
+      ],
+      "bvp_length_samples": 378880,
+      "bvp_duration_sec": 5920.0,
+      "label_length_samples": 4144000,
+      "label_duration_sec": 5920.0,
+      "unique_raw_label_values": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "windows_discarded_for_label_transition": 0,
+      "warnings": []
+    }
+  ],
+  "total_windows_all_subjects": 1570,
+  "label_code_reference": {
+    "0": "transient/undefined",
+    "1": "baseline",
+    "2": "stress",
+    "3": "amusement",
+    "4": "meditation",
+    "5": "ignore/other",
+    "6": "ignore/other",
+    "7": "ignore/other"
+  }
+}
