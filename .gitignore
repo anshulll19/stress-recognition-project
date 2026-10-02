@@ -27,3 +27,13 @@ runs/
 
 # Jupyter
 .ipynb_checkpoints/
+data/
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.npz
+*.npy
+*.h5
+*.keras
+*.ckpt
