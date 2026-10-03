@@ -96,6 +96,15 @@ To investigate whether cross-dataset training can produce robust physiological r
 | **PPGE** | PPG (fingertip, 100Hz) | No | 18 | Valence / Arousal (1–9 scale) | Physiological training / generalization | Requested — pending |
 | **WESAD** | BVP (wrist, Empatica E4, ~64Hz) + chest ECG/EDA/EMG/RESP/TEMP/ACC | No | 15 | Stress / baseline / amusement / meditation | Physiological training / generalization | Requested — pending |
 | **EmpathicSchool** | HR, EDA, TEMP, ACC (Empatica E4) — **confirm raw BVP availability, not just derived HR** | Yes (facial video + landmarks) | 20 (v1) or 30 (v2, ~40hrs) | Stress level, derived from NASA-TLX | Multimodal target domain | **Public / open access** (arXiv 2209.13542, Zenodo) — use v2 (30 subjects) if possible |
+| **CLAS** | PPG (256Hz, also ECG/EDA/ACC available) | No | 62 | **Task correctness + stimulus/task tags** — NOT participant-level valence/arousal self-report (see caution below) | Additional cross-dataset generalization dataset (physiological only) | **Public** (IEEE DataPort / Mendeley, no access request) — download in progress |
+
+> **Important caution on CLAS:** despite superficially resembling PPGE (both reference the arousal-valence circumplex model), CLAS's label is **task/stimulus-design-based** — each of its 5 tasks was designed to target a specific quadrant, and CLAS additionally records task *correctness* (interactive tasks) — not a per-participant subjective valence/arousal rating like PPGE's. These are different constructs and **must not be treated as the same supervised label** without an explicit, defensible mapping. CLAS is strong as a *large-N, PPG, timestamped, cross-dataset generalization dataset* (62 subjects, more than PPGE + WESAD combined) — its role should be scoped accordingly, not assumed equivalent to PPGE for direct label transfer until the 4 verification items below are resolved.
+>
+> **Physical verification still required (from actual downloaded files, not documentation alone):**
+> 1. Actual PPG column name/location in the `Data/` files
+> 2. Actual participant folder list (confirm N=62, any gaps/exclusions)
+> 3. Exact fields in `Block_details` (timing/task metadata)
+> 4. Actual contents of `Answers/*.csv` (confirm whether this is task-correctness only, or includes any subjective rating)
 
 > **Important:** These datasets will not be treated as one synchronized multimodal dataset. PPGE and WESAD are used to investigate physiological representation learning and cross-dataset generalization; EmpathicSchool provides the synchronized physiological–video setting for multimodal evaluation.
 

@@ -37,3 +37,6 @@ __pycache__/
 *.h5
 *.keras
 *.ckpt
+
+# Local secrets
+secrets/

@@ -29,60 +29,164 @@ import tensorflow as tf
 from model import build_cnn_tcn_lstm_model
 from dataset_loader import load_dataset, register_dataset
 from evaluation import compute_metrics, print_metrics_report, log_experiment
+from seed import set_seed
 
 
 def register_known_datasets():
     """Central place to register dataset name -> file path. Update paths
     as teammates' preprocessing outputs land."""
-    register_dataset("wesad", "wesad_binary.npz")
-    register_dataset("clas", "clas_binary.npz")           # not yet produced
+    register_dataset("wesad", "data/wesad/wesad_binary.npz")
+    register_dataset("clas", "data/clas/clas_binary_clean.npz")           # not yet produced
     register_dataset("ppge", "ppge_binary.npz")            # not yet produced
     register_dataset("empathicschool", "empathicschool_binary.npz")  # not yet produced
 
 
 def run_cross_dataset_experiment(train_names, test_name, epochs=350, batch_size=512,
-                                  early_stopping_patience=80, verbose=0):
+                                  early_stopping_patience=80, verbose=0, random_seed=42):
     """
-    train_names: list of dataset names (1 for simple cross-dataset, 2+ for pooled training)
-    test_name: single dataset name, evaluated in full (not LOSO -- source and
-               target are different datasets, so there's no "held-out subject"
-               concept here, the whole target dataset is the test set)
+    Cross-dataset experiment.
+
+    Source dataset(s):
+        - Split by SUBJECT into source-train and source-validation.
+        - Validation is used only for early stopping.
+
+    Target dataset:
+        - Never used for training or validation.
+        - Entire target dataset is used once as the final test set.
     """
-    train_windows, train_labels = [], []
+    set_seed(random_seed)
+
+    train_windows = []
+    train_labels = []
+    train_subjects = []
+
     for name in train_names:
         d = load_dataset(name)
-        train_windows.append(d['windows'])
-        train_labels.append(d['labels'])
-    X_train = np.concatenate(train_windows, axis=0)
-    y_train = np.concatenate(train_labels, axis=0)
 
+        train_windows.append(d["windows"])
+        train_labels.append(d["labels"])
+
+        # Prefix subject IDs with dataset name so pooled datasets
+        # cannot accidentally share subject identifiers.
+        subject_ids = np.asarray(d["subject_ids"]).astype(str)
+        subject_ids = np.array(
+            [f"{name}_{sid}" for sid in subject_ids]
+        )
+        train_subjects.append(subject_ids)
+
+    X_source = np.concatenate(train_windows, axis=0)
+    y_source = np.concatenate(train_labels, axis=0)
+    subjects_source = np.concatenate(train_subjects, axis=0)
+
+    # Target dataset is NEVER used for training or validation.
     test_data = load_dataset(test_name)
-    X_test, y_test = test_data['windows'], test_data['labels']
+    X_test = test_data["windows"]
+    y_test = test_data["labels"]
 
-    print(f"Train: {'+'.join(train_names)} ({len(y_train)} windows, "
-          f"{100*y_train.mean():.1f}% stress)")
-    print(f"Test:  {test_name} ({len(y_test)} windows, {100*y_test.mean():.1f}% stress)")
+    # ---------------------------------------------------------
+    # SUBJECT-LEVEL SOURCE TRAIN / VALIDATION SPLIT
+    # ---------------------------------------------------------
+    from sklearn.model_selection import GroupShuffleSplit
 
-    class_counts = np.bincount(y_train.astype(int))
-    class_weight = {i: len(y_train) / (2 * c) for i, c in enumerate(class_counts) if c > 0}
-
-    y_train_cat = tf.keras.utils.to_categorical(y_train, num_classes=2)
-    y_test_cat = tf.keras.utils.to_categorical(y_test, num_classes=2)
-
-    model = build_cnn_tcn_lstm_model()
-    callbacks = [tf.keras.callbacks.EarlyStopping(
-        monitor='val_accuracy', patience=early_stopping_patience, restore_best_weights=True
-    )]
-
-    model.fit(
-        X_train, y_train_cat,
-        validation_data=(X_test, y_test_cat),
-        epochs=epochs, batch_size=batch_size,
-        class_weight=class_weight, callbacks=callbacks, verbose=verbose
+    splitter = GroupShuffleSplit(
+        n_splits=1,
+        test_size=0.20,
+        random_state=42
     )
 
-    pred_probs = model.predict(X_test, verbose=0)[:, 1]
-    metrics = compute_metrics(y_test, pred_probs)
+    train_idx, val_idx = next(
+        splitter.split(
+            X_source,
+            y_source,
+            groups=subjects_source
+        )
+    )
+
+    X_train = X_source[train_idx]
+    y_train = y_source[train_idx]
+
+    X_val = X_source[val_idx]
+    y_val = y_source[val_idx]
+
+    train_subject_ids = subjects_source[train_idx]
+    val_subject_ids = subjects_source[val_idx]
+
+    print(
+        f"Source train: {'+'.join(train_names)} "
+        f"({len(y_train)} windows, "
+        f"{len(np.unique(train_subject_ids))} subjects, "
+        f"{100*y_train.mean():.1f}% class-1)"
+    )
+
+    print(
+        f"Source validation: "
+        f"({len(y_val)} windows, "
+        f"{len(np.unique(val_subject_ids))} subjects, "
+        f"{100*y_val.mean():.1f}% class-1)"
+    )
+
+    print(
+        f"Target test: {test_name} "
+        f"({len(y_test)} windows, "
+        f"{len(np.unique(test_data['subject_ids']))} subjects, "
+        f"{100*y_test.mean():.1f}% class-1)"
+    )
+
+    # ---------------------------------------------------------
+    # CLASS WEIGHTS — SOURCE TRAIN ONLY
+    # ---------------------------------------------------------
+    class_counts = np.bincount(y_train.astype(int))
+
+    class_weight = {
+        i: len(y_train) / (2 * count)
+        for i, count in enumerate(class_counts)
+        if count > 0
+    }
+
+    y_train_cat = tf.keras.utils.to_categorical(
+        y_train, num_classes=2
+    )
+
+    y_val_cat = tf.keras.utils.to_categorical(
+        y_val, num_classes=2
+    )
+
+    # ---------------------------------------------------------
+    # MODEL
+    # ---------------------------------------------------------
+    model = build_cnn_tcn_lstm_model()
+
+    callbacks = [
+        tf.keras.callbacks.EarlyStopping(
+            monitor="val_accuracy",
+            patience=early_stopping_patience,
+            restore_best_weights=True
+        )
+    ]
+
+    model.fit(
+        X_train,
+        y_train_cat,
+        validation_data=(X_val, y_val_cat),
+        epochs=epochs,
+        batch_size=batch_size,
+        class_weight=class_weight,
+        callbacks=callbacks,
+        verbose=verbose
+    )
+
+    # ---------------------------------------------------------
+    # FINAL TARGET EVALUATION
+    # ---------------------------------------------------------
+    pred_probs = model.predict(
+        X_test,
+        verbose=0
+    )[:, 1]
+
+    metrics = compute_metrics(
+        y_test,
+        pred_probs
+    )
 
     return metrics, model
 
