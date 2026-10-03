@@ -63,15 +63,25 @@ def tcn_residual_block(x, filters, kernel_size, dilation_rate, dropout_rate=0.30
     return out
 
 
-def build_tcn_branch(inputs, filters=8, kernel_size=32, dilations=(1, 2, 4, 8), dropout_rate=0.30):
-    """TCN branch: dilations [1,2,4,8], causal padding, skip connections, 30% dropout."""
+def build_tcn_branch(inputs, filters=8, kernel_size=32, dilations=(1, 2, 4, 8),
+                      dropout_rate=0.30, return_sequence=False):
+    """
+    TCN branch: dilations [1,2,4,8], causal padding, skip connections, 30% dropout.
+
+    return_sequence=False (default, unchanged behavior): returns the pooled
+        fixed-size representation, as used by the classifier in
+        build_cnn_tcn_lstm_model().
+    return_sequence=True: returns the pre-pooling (T', filters) sequence
+        instead -- used by pretrain_encoder.py's decoder, which needs the
+        temporal structure intact to reconstruct the full-length signal.
+    """
     x = inputs
     for d in dilations:
         x = tcn_residual_block(x, filters=filters, kernel_size=kernel_size,
                                 dilation_rate=d, dropout_rate=dropout_rate)
-    # Reduce temporal dimension to a fixed-size representation
-    x = layers.GlobalAveragePooling1D(name='tcn_global_pool')(x)
-    return x
+    if return_sequence:
+        return x
+    return layers.GlobalAveragePooling1D(name='tcn_global_pool')(x)
 
 
 def build_lstm_branch(inputs, units=12):
