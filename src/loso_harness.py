@@ -15,6 +15,7 @@ is generic on top of that contract.
 """
 
 import numpy as np
+from sklearn.model_selection import GroupShuffleSplit
 from sklearn.metrics import roc_auc_score, f1_score, accuracy_score
 import tensorflow as tf
 
@@ -53,8 +54,47 @@ def run_loso_cv(windows, labels, subject_ids, model_builder_fn=build_cnn_tcn_lst
         test_mask = subject_ids == held_out_subject
         train_mask = ~test_mask
 
-        X_train, y_train = windows[train_mask], labels[train_mask]
+        X_outer_train, y_outer_train = windows[train_mask], labels[train_mask]
+        subjects_outer_train = subject_ids[train_mask]
         X_test, y_test = windows[test_mask], labels[test_mask]
+
+        # Split the outer training pool by subject. The held-out test
+        # subject is never used for validation or early stopping.
+        splitter = GroupShuffleSplit(
+            n_splits=1, test_size=0.15, random_state=42
+        )
+        inner_train_idx, inner_val_idx = next(
+            splitter.split(
+                X_outer_train,
+                y_outer_train,
+                groups=subjects_outer_train,
+            )
+        )
+
+        X_train, y_train = (
+            X_outer_train[inner_train_idx],
+            y_outer_train[inner_train_idx],
+        )
+        X_val, y_val = (
+            X_outer_train[inner_val_idx],
+            y_outer_train[inner_val_idx],
+        )
+        if len(np.unique(y_train)) < 2:
+            raise ValueError(
+                f"Inner training split for held-out subject "
+                f"{held_out_subject} contains only one class."
+            )
+
+        if len(np.unique(y_val)) < 2:
+            raise ValueError(
+                f"Inner validation split for held-out subject "
+                f"{held_out_subject} contains only one class."
+            )
+
+        train_subjects = set(subjects_outer_train[inner_train_idx])
+        val_subjects = set(subjects_outer_train[inner_val_idx])
+        assert train_subjects.isdisjoint(val_subjects)
+        assert held_out_subject not in train_subjects | val_subjects
 
         if len(np.unique(y_test)) < 2:
             # Can't compute AUC for a held-out subject with only one class present;
@@ -68,20 +108,20 @@ def run_loso_cv(windows, labels, subject_ids, model_builder_fn=build_cnn_tcn_lst
         class_weight = {i: len(y_train) / (2 * count) for i, count in enumerate(class_counts) if count > 0}
 
         y_train_cat = tf.keras.utils.to_categorical(y_train, num_classes=2)
-        y_test_cat = tf.keras.utils.to_categorical(y_test, num_classes=2)
+        y_val_cat = tf.keras.utils.to_categorical(y_val, num_classes=2)
 
         model = model_builder_fn()
 
         callbacks = [
             tf.keras.callbacks.EarlyStopping(
-                monitor='val_accuracy', patience=early_stopping_patience,
+                monitor='val_loss',patience=early_stopping_patience,
                 restore_best_weights=True
             )
         ]
 
         model.fit(
             X_train, y_train_cat,
-            validation_data=(X_test, y_test_cat),
+            validation_data=(X_val, y_val_cat),
             epochs=epochs, batch_size=batch_size,
             class_weight=class_weight,
             callbacks=callbacks,

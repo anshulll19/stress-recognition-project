@@ -40,3 +40,10 @@ __pycache__/
 
 # Local secrets
 secrets/
+
+# Selected research result tables — allow intentional commits
+!learning_curve_rigorous_results.csv
+!learning_curve_rigorous_results_summary.csv
+!learning_curve_rigorous_per_subject.csv
+!docs/ablation_final_results.csv
+!results/loso_final_val_loss/loso_corrected_per_subject.csv

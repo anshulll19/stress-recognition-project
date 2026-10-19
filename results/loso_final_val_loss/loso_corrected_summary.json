@@ -1,0 +1,11 @@
+{
+  "overall": {
+    "accuracy": 0.8780788177339901,
+    "f1_weighted": 0.8793511058170864,
+    "f1_class0": 0.9209896249002394,
+    "f1_class1": 0.7331536388140162,
+    "auc": 0.8981276371308017
+  },
+  "n_subjects": 15,
+  "per_subject_results_file": "results/loso_final_val_loss/loso_corrected_per_subject.csv"
+}

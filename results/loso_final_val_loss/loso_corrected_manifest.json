@@ -1,0 +1,19 @@
+{
+  "timestamp_utc": "2026-10-18T13:44:32.071532+00:00",
+  "data_path": "data/wesad/wesad_binary.npz",
+  "windows_shape": [
+    812,
+    3840,
+    1
+  ],
+  "n_subjects": 15,
+  "epochs_max": 350,
+  "batch_size": 512,
+  "early_stopping_patience": 80,
+  "early_stopping_monitor": "val_loss",
+  "validation": "GroupShuffleSplit on outer-training subjects only",
+  "outer_test_subject_used_for_early_stopping": false,
+  "class_weights_computed_from": "inner training partition only",
+  "per_subject_file": "results/loso_final_val_loss/loso_corrected_per_subject.csv",
+  "summary_file": "results/loso_final_val_loss/loso_corrected_summary.json"
+}
