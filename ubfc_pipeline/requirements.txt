@@ -1,0 +1,7 @@
+numpy
+scipy
+pandas
+scikit-learn
+matplotlib
+opencv-python
+mediapipe      # stage 1 only
