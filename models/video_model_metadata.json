@@ -1,0 +1,21 @@
+{
+  "model_type": "RandomForestClassifier",
+  "input_features": 23,
+  "training_windows": 972,
+  "participants": 18,
+  "labels": {
+    "0": "rest-task proxy",
+    "1": "stress-task proxy"
+  },
+  "validation": {
+    "method": "Leave-One-Participant-Out",
+    "accuracy": 0.966,
+    "balanced_accuracy": 0.9668,
+    "macro_f1": 0.9622
+  },
+  "limitations": [
+    "Task-derived labels are not clinically validated distress labels.",
+    "Video features may capture task or speech behaviour.",
+    "Live webcam performance has not yet been validated."
+  ]
+}
