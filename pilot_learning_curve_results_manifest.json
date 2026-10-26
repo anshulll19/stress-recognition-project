@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-10-17T22:18:22.951974",
+  "git_commit": "75886be78747377c73dde57b0065fc665a820ea2",
+  "configuration": {
+    "data": "data/wesad/wesad_binary.npz",
+    "encoder_weights": "models/pretrained_clas_mae_encoder.weights.h5",
+    "folds": "S2",
+    "fractions": "0.1,1.0",
+    "seeds": 1,
+    "quick": false,
+    "output": "pilot_learning_curve_results.csv",
+    "epochs": 350,
+    "batch_size": 512,
+    "patience": 80,
+    "monitor": "val_loss",
+    "scratch_lr": 0.01,
+    "frozen_lr": 0.01,
+    "finetune_lr": 0.0001,
+    "inner_val_ratio": 0.15
+  },
+  "methodology": {
+    "test_leakage_prevented": true,
+    "inner_validation": "subject_aware_disjoint",
+    "early_stopping_target": "inner_validation_set_only",
+    "outer_test_subject": "final_evaluation_only",
+    "seeds_controlled": true,
+    "finetune_lr_damped": true
+  }
+}
