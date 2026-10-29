@@ -58,6 +58,7 @@ class BranchPrediction:
     quality_flags: List[str] = field(default_factory=list)
     timestamp: Optional[str] = None          # ISO-8601; capture time of the input
     model_version: Optional[str] = None
+    window_ref: Optional[str] = None
 
     @property
     def label(self) -> Optional[str]:
@@ -102,6 +103,7 @@ class BranchPrediction:
             "quality_flags": list(self.quality_flags),
             "timestamp": self.timestamp,
             "model_version": self.model_version,
+            "window_ref": self.window_ref,
         }
 
     @classmethod
@@ -115,6 +117,7 @@ class BranchPrediction:
             quality_flags=list(d.get("quality_flags") or []),
             timestamp=d.get("timestamp"),
             model_version=d.get("model_version"),
+            window_ref=d.get("window_ref"),
         )
 
 
