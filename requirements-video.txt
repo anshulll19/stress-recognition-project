@@ -1,0 +1,10 @@
+# Video pipeline (src/video_pipeline.py) - versions tested on Python 3.12.4
+# Install in a separate venv: pip install -r requirements-video.txt
+# scikit-learn must be 1.9.1: models/video_distress_upperface.joblib was saved with it.
+scikit-learn==1.9.1
+numpy==2.5.4
+scipy==1.18.1
+pandas==3.1.0
+joblib==1.6.0
+mediapipe==1.2.0
+opencv-contrib-python==5.0.0.93
