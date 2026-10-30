@@ -57,3 +57,4 @@ secrets/
 
 # Local MediaPipe model (obtain separately; do not commit the binary)
 /models/face_landmarker.task
+.venv-video/
