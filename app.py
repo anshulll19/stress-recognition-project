@@ -27,6 +27,8 @@ from demo.adapters.fusion_adapter import MultimodalFusionAdapter
 from demo.adapters.trend_adapter import TemporalTrendAdapter
 from demo.adapters.clas_adapter import CLASInferenceAdapter
 from demo.utils.metrics import ResearchMetricsLoader
+from src.decision_panel import render_decision_panel
+from src.availability import wesad_unavailable_reason
 from demo.ui.modern_theme import (
     HEALTHCARE_DARK_CSS, render_header, render_metric_card,
     render_probability_bar, render_modality_weights
@@ -623,6 +625,9 @@ with tabs[2]:
             fig_sig = plot_bvp_eda_modern(cur_bvp.flatten(), cur_eda.flatten(), cur_gt, p_u_stress)
             st.pyplot(fig_sig, width="stretch")
 
+    elif "WESAD" in dataset_choice and wesad_unavailable_reason(wesad_ad):
+        st.warning(wesad_unavailable_reason(wesad_ad))
+
     elif "WESAD" in dataset_choice:
         wesad_manifest = wesad_ad.get_manifest()
         val_subs = wesad_manifest.get("validation_subjects", [])
@@ -928,6 +933,9 @@ with tabs[4]:
             <em>Validation Notice: Probabilities represent synchronized out-of-fold benchmark predictions evaluated on UBFC-Phys. No artificial dropout fallback is simulated on valid benchmark data.</em>
         </div>
     """, unsafe_allow_html=True)
+
+    # Physiology-first decision policy (replay)
+    render_decision_panel(row_f, key_prefix="fusion_decision")
 
     # Timeline trajectory
     fig_tl_f = plot_timeline_modern(f_sub_rows, method_col="p_blend_0.3_uf" if "p_blend_0.3_uf" in f_sub_rows.columns else method_f)
