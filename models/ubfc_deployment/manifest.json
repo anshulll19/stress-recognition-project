@@ -1,0 +1,57 @@
+{
+  "dataset": "UBFC-Phys (results/physiology/physiology_features_labeled.csv)",
+  "n_subjects": 56,
+  "total_windows": 5208,
+  "features": [
+    "bvp_mean",
+    "bvp_std",
+    "bvp_median",
+    "bvp_iqr",
+    "bvp_slope_per_sample",
+    "bvp_range",
+    "eda_mean",
+    "eda_std",
+    "eda_median",
+    "eda_iqr",
+    "eda_slope_per_sample",
+    "eda_range"
+  ],
+  "feature_order": [
+    "bvp_mean",
+    "bvp_std",
+    "bvp_median",
+    "bvp_iqr",
+    "bvp_slope_per_sample",
+    "bvp_range",
+    "eda_mean",
+    "eda_std",
+    "eda_median",
+    "eda_iqr",
+    "eda_slope_per_sample",
+    "eda_range"
+  ],
+  "calibrated_checkpoint": "models/ubfc_deployment/ubfc_phys_calibrated_rf.joblib",
+  "uncalibrated_checkpoint": "models/ubfc_deployment/ubfc_phys_uncalibrated_rf.joblib",
+  "evaluation_protocol": "56-subject Leave-One-Subject-Out (LOSO) cross-validation",
+  "evaluation_summary_file": "models/ubfc_deployment/loso_summary.json",
+  "evaluation_per_subject_file": "models/ubfc_deployment/loso_per_subject.csv",
+  "evaluation_metrics": {
+    "n_subjects": 56,
+    "n_windows": 5208,
+    "uncalibrated_loso": {
+      "accuracy": 0.7427035330261137,
+      "balanced_accuracy": 0.7027649769585254,
+      "macro_f1": 0.7058238342248477,
+      "weighted_f1": 0.7405435506668204,
+      "auc": 0.8169625436673109
+    },
+    "rest_calibrated_loso": {
+      "accuracy": 0.9792626728110599,
+      "balanced_accuracy": 0.9822868663594471,
+      "macro_f1": 0.9769238911476432,
+      "weighted_f1": 0.9793726999339467,
+      "auc": 0.9943910235139841
+    }
+  },
+  "deployment_training_note": "Deployment candidate models trained on all 56 subjects. Independent evaluation was strictly held out per fold."
+}
