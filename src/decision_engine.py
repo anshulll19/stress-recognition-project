@@ -112,7 +112,7 @@ def decide(physiology: Optional[BranchPrediction], video: Optional[BranchPredict
             mode=DecisionMode.VIDEO_FALLBACK, determining_branch=Branch.VIDEO,
             primary_label=video.label, primary_probabilities=dict(video.probabilities),
             source=source, explanation=text,
-            banner="VIDEO-ONLY FALLBACK: physiology unavailable or unreliable. Lower-trust result.",
+            banner="VIDEO-ONLY FALLBACK: physiology unavailable or unreliable, so the result comes from video alone.",
             warnings=warnings, **common)
 
     text = ("Insufficient data. Physiology: " + "; ".join(phys_a.reasons) +

@@ -51,10 +51,16 @@ def render_decision_panel(row, key_prefix: str = "decision") -> None:
     st.subheader(TITLES[d.mode])
     if d.banner:
         st.warning(d.banner)
-    m1, m2, m3 = st.columns(3)
-    m1.metric("Result", LABELS.get(d.primary_label, "none"))
-    m2.metric("Determined by", d.determining_branch.value if d.determining_branch else "none")
-    m3.metric("Data source", d.source.value.upper())
+    m1, m2, m3 = st.columns([2, 1, 1])
+    with m1:
+        st.caption("Result")
+        st.markdown(f"#### {LABELS.get(d.primary_label, 'No result')}")
+    with m2:
+        st.caption("Determined by")
+        st.markdown(f"#### {d.determining_branch.value if d.determining_branch else 'none'}")
+    with m3:
+        st.caption("Data source")
+        st.markdown(f"#### {d.source.value.upper()}")
     st.write(d.explanation)
     for w in d.warnings:
         st.warning(w)
