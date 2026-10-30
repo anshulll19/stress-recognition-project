@@ -1,0 +1,18 @@
+{
+  "n_subjects": 56,
+  "n_windows": 5208,
+  "uncalibrated_loso": {
+    "accuracy": 0.7427035330261137,
+    "balanced_accuracy": 0.7027649769585254,
+    "macro_f1": 0.7058238342248477,
+    "weighted_f1": 0.7405435506668204,
+    "auc": 0.8169625436673109
+  },
+  "rest_calibrated_loso": {
+    "accuracy": 0.9792626728110599,
+    "balanced_accuracy": 0.9822868663594471,
+    "macro_f1": 0.9769238911476432,
+    "weighted_f1": 0.9793726999339467,
+    "auc": 0.9943910235139841
+  }
+}
