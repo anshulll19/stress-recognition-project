@@ -1,0 +1,91 @@
+WESAD PREPROCESSING REPORT (Phase 0 — data engineering only, no accuracy)
+===========================================================================
+Data directory: D:\WESAD
+Label-transition rule used: majority
+
+Subjects expected (WESAD spec, S1/S12 don't exist): ['S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
+Subjects found on disk:                            ['S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9']
+
+Subjects processed successfully: ['S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S13', 'S14', 'S15', 'S16', 'S17']
+Subjects excluded: none
+
+Total windows across all processed subjects: 1570
+
+Per-subject detail:
+  S2: status=ok
+      output shape: (110, 3840)  (n_windows, 3840)
+      BVP: 389056 samples (~6079.0s)   labels: 4255300 samples (~6079.0s)
+      raw label values present: [0, 1, 2, 3, 4, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S3: status=ok
+      output shape: (117, 3840)  (n_windows, 3840)
+      BVP: 415552 samples (~6493.0s)   labels: 4545100 samples (~6493.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S4: status=ok
+      output shape: (116, 3840)  (n_windows, 3840)
+      BVP: 411072 samples (~6423.0s)   labels: 4496100 samples (~6423.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S5: status=ok
+      output shape: (113, 3840)  (n_windows, 3840)
+      BVP: 400512 samples (~6258.0s)   labels: 4380600 samples (~6258.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S6: status=ok
+      output shape: (128, 3840)  (n_windows, 3840)
+      BVP: 452544 samples (~7071.0s)   labels: 4949700 samples (~7071.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S7: status=ok
+      output shape: (95, 3840)  (n_windows, 3840)
+      BVP: 335232 samples (~5238.0s)   labels: 3666600 samples (~5238.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S8: status=ok
+      output shape: (99, 3840)  (n_windows, 3840)
+      BVP: 349824 samples (~5466.0s)   labels: 3826200 samples (~5466.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S9: status=ok
+      output shape: (94, 3840)  (n_windows, 3840)
+      BVP: 334272 samples (~5223.0s)   labels: 3656100 samples (~5223.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S10: status=ok
+      output shape: (99, 3840)  (n_windows, 3840)
+      BVP: 351744 samples (~5496.0s)   labels: 3847200 samples (~5496.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S11: status=ok
+      output shape: (95, 3840)  (n_windows, 3840)
+      BVP: 334912 samples (~5233.0s)   labels: 3663100 samples (~5233.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S13: status=ok
+      output shape: (100, 3840)  (n_windows, 3840)
+      BVP: 354368 samples (~5537.0s)   labels: 3875900 samples (~5537.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S14: status=ok
+      output shape: (100, 3840)  (n_windows, 3840)
+      BVP: 355072 samples (~5548.0s)   labels: 3883600 samples (~5548.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S15: status=ok
+      output shape: (95, 3840)  (n_windows, 3840)
+      BVP: 336128 samples (~5252.0s)   labels: 3676400 samples (~5252.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S16: status=ok
+      output shape: (102, 3840)  (n_windows, 3840)
+      BVP: 360384 samples (~5631.0s)   labels: 3941700 samples (~5631.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+  S17: status=ok
+      output shape: (107, 3840)  (n_windows, 3840)
+      BVP: 378880 samples (~5920.0s)   labels: 4144000 samples (~5920.0s)
+      raw label values present: [0, 1, 2, 3, 4, 5, 6, 7]
+      windows discarded for straddling a label transition: 0
+
+Label code reference: {"0": "transient/undefined", "1": "baseline", "2": "stress", "3": "amusement", "4": "meditation", "5": "ignore/other", "6": "ignore/other", "7": "ignore/other"}
