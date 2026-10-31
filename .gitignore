@@ -48,12 +48,20 @@ secrets/
 !docs/ablation_final_results.csv
 !results/loso_final_val_loss/loso_corrected_per_subject.csv
 
+
+
 # Local video-processing environment and generated pipeline outputs
 /video_venv/
 /ubfc_pipeline/out/
 /ubfc_pipeline/__pycache__/
-/results/
+# /results/
 /scratch/
 
 # Local MediaPipe model (obtain separately; do not commit the binary)
 /models/face_landmarker.task
+
+# Upper-face fusion and controlled conditions audit
+!/results/
+!/results/fusion_upperface/
+!/results/fusion_upperface/**
+!/results/fusion_upperface/*.csv
