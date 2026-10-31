@@ -1,0 +1,7 @@
+Method,Mean AUC,95% CI AUC,Balanced Accuracy,Macro-F1,p-val vs Video,Subjects Improved/Worsened
+Upper-face Video only,0.964,"[0.929, 0.999]",0.89,0.889,N/A,0/0
+Physiology only (LSTM),0.814,"[0.720, 0.908]",0.745,0.729,0.0045,2/14
+Blend 0.2,0.966,"[0.940, 0.992]",0.904,0.902,0.3819,7/6
+Blend 0.3,0.968,"[0.945, 0.990]",0.907,0.905,0.6246,6/7
+Blend 0.5,0.964,"[0.940, 0.988]",0.904,0.904,0.7798,5/8
+Stacked LOSO,0.967,"[0.943, 0.991]",0.903,0.901,0.6494,7/6
