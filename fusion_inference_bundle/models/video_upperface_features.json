@@ -1,0 +1,21 @@
+[
+  "f_motion_mean",
+  "f_motion_std",
+  "f_ear_mean_mean",
+  "f_ear_mean_std",
+  "f_brow_eye_mean",
+  "f_brow_eye_std",
+  "f_turn_proxy_mean",
+  "f_turn_proxy_std",
+  "f_nod_proxy_mean",
+  "f_nod_proxy_std",
+  "f_tilt_proxy_mean",
+  "f_tilt_proxy_std",
+  "f_turn_depth_proxy_mean",
+  "f_turn_depth_proxy_std",
+  "f_turn_proxy_absdiff",
+  "f_nod_proxy_absdiff",
+  "f_tilt_proxy_absdiff",
+  "f_motion_max",
+  "f_motion_p90"
+]
