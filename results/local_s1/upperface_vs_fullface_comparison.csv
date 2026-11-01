@@ -1,0 +1,3 @@
+task,prediction_upperface,class_1_probability_upperface,prediction_fullface,class_1_probability_fullface,stress_probability_difference_pp
+T1,0,0.3718527676027677,0,0.3718026603026604,-0.005010730010729381
+T3,1,0.9577976190476188,1,0.9970370370370368,3.923941798941799
