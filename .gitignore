@@ -73,3 +73,8 @@ secrets/
 !/results/fusion_lstm/*.csv
 !/results/fusion_lstm/*.json
 !/results/fusion_lstm/*.md
+# Upper-face fusion and controlled conditions audit
+!/results/
+!/results/fusion_upperface/
+!/results/fusion_upperface/**
+!/results/fusion_upperface/*.csv
