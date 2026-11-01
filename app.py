@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 from demo.adapters.ubfc_adapter import UBFCPhysInferenceAdapter
 from demo.adapters.wesad_adapter import WESADInferenceAdapter
 from demo.adapters.video_adapter import VideoInferenceAdapter
+from demo.adapters.upload_video_adapter import UploadVideoAdapter
 from demo.adapters.fusion_adapter import MultimodalFusionAdapter
 from demo.adapters.trend_adapter import TemporalTrendAdapter
 from demo.adapters.clas_adapter import CLASInferenceAdapter
@@ -50,6 +51,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 # Resource Caching
 # ──────────────────────────────────────────────────────────────────────────────
 @st.cache_resource
+@st.cache_resource
+def get_upload_video_adapter():
+    return UploadVideoAdapter(PROJECT_ROOT)
+
+
 def get_adapters():
     ubfc    = UBFCPhysInferenceAdapter(PROJECT_ROOT)
     wesad   = WESADInferenceAdapter(PROJECT_ROOT)
@@ -717,44 +723,153 @@ with tabs[3]:
     )
     use_upper_features = ("Upper-Face" in feat_mode_sel)
 
-    # Video Input Pipeline
-    with st.expander("🎥 Video Input & Pipeline Verification Status (Upload Unavailable)"):
-        c_vid_src1, c_vid_src2 = st.columns(2)
-        with c_vid_src1:
-            uploaded_video = st.file_uploader(
-                "Upload video file for facial landmark extraction (.mp4, .avi, .mov) — [PIPELINE UNAVAILABLE]",
-                type=["mp4", "avi", "mov"],
-                help="End-to-end video decoding and MediaPipe frame-by-frame landmark extraction pipeline is not yet implemented."
+    # Live uploaded-video inference using the trained 19-feature model
+    with st.expander("🎥 Upload Video — Live Facial Inference", expanded=True):
+        uploaded_video = st.file_uploader(
+            "Upload a facial video (MP4, MOV, AVI)",
+            type=["mp4", "mov", "avi"],
+            help="The first 10 seconds are analyzed at 5 FPS. Minimum duration: 10 seconds.",
+            key="live_facial_video_upload",
+        )
+
+        if not use_upper_features:
+            st.warning(
+                "Uploaded-video inference currently uses the validated "
+                "19-feature upper-face model. Select Upper-Face above."
             )
-            if uploaded_video is not None:
-                st.warning(
-                    "⚠️ Video decoding pipeline is NOT YET IMPLEMENTED / UNAVAILABLE in this dashboard build. "
-                    "The deployed Random Forest models require precomputed 19- or 23-dimensional feature vectors. "
-                    "The dashboard does not decode raw video files on-the-fly and will NOT fabricate predictions. "
-                    "Inference below is operating strictly on verified UBFC-Phys precomputed benchmark windows."
-                )
-            else:
-                st.caption(
-                    "Note: Custom video decoding is unavailable. Inference operates on precomputed facial action landmark "
-                    "features from verified UBFC-Phys benchmark windows (results/video/video_windows.csv)."
-                )
-        with c_vid_src2:
-            st.markdown("""
-                <div class="health-card" style="padding:10px; margin:0;">
-                    <div style="font-size:0.75rem; color:#9CA3AF; font-weight:600;">Hardware Ingestion Status</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-                        <span style="font-size:0.8rem; color:#CBD5E1;">Live Webcam Capture:</span>
-                        <span class="badge badge-warning">NOT IMPLEMENTED / DISABLED</span>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-                        <span style="font-size:0.8rem; color:#CBD5E1;">Video File Decoding:</span>
-                        <span class="badge badge-warning">UNAVAILABLE / OFFLINE ONLY</span>
-                    </div>
-                    <div style="font-size:0.7rem; color:#6B7280; margin-top:6px; line-height:1.4;">
-                        Real-time webcam ingestion and file-based video decoding require dedicated background extraction workers. Active inference is strictly offline replay of verified UBFC-Phys benchmark feature recordings.
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
+
+        if uploaded_video is not None:
+            st.video(uploaded_video)
+
+            st.caption(
+                f"File: {uploaded_video.name} · "
+                f"Size: {uploaded_video.size / (1024 * 1024):.2f} MB"
+            )
+
+            if use_upper_features and st.button(
+                "Analyze Video",
+                type="primary",
+                key="analyze_uploaded_facial_video",
+            ):
+                try:
+                    with st.spinner(
+                        "Extracting facial landmarks and running inference..."
+                    ):
+                        upload_adapter = get_upload_video_adapter()
+                        result = upload_adapter.predict_video(
+                            uploaded_video.getvalue()
+                        )
+
+                    st.success("Video analysis completed.")
+
+                    st.markdown("### Uploaded Video Prediction")
+
+                    result_col1, result_col2, result_col3 = st.columns(3)
+
+                    with result_col1:
+                        st.metric(
+                            "Predicted Class",
+                            result["class_label"],
+                        )
+
+                    with result_col2:
+                        st.metric(
+                            "Stress-task Probability",
+                            f'{result["class_1_probability"]:.2%}',
+                        )
+
+                    with result_col3:
+                        st.metric(
+                            "Rest-task Probability",
+                            f'{result["class_0_probability"]:.2%}',
+                        )
+
+                    st.markdown("#### Face Detection Quality")
+
+                    quality_col1, quality_col2, quality_col3 = st.columns(3)
+
+                    with quality_col1:
+                        st.metric(
+                            "Valid Face Frames",
+                            f'{result["valid_face_frames"]}/'
+                            f'{result["sampled_frames"]}',
+                        )
+
+                    with quality_col2:
+                        st.metric(
+                            "Detection Fraction",
+                            f'{result["detection_fraction"]:.1%}',
+                        )
+
+                    with quality_col3:
+                        st.metric(
+                            "Video Duration",
+                            f'{result["duration_sec"]:.2f}s',
+                        )
+
+                    st.progress(
+                        float(result["detection_fraction"]),
+                        text="Face detection fraction",
+                    )
+
+                    if result["detection_fraction"] < 0.8:
+                        st.warning(
+                            "Face detection quality is below the 80% "
+                            "reliability threshold. Interpret this prediction cautiously."
+                        )
+                    else:
+                        st.info(
+                            "Face detection passed the 80% window reliability threshold."
+                        )
+
+                    st.markdown("#### Class Probabilities")
+                    st.markdown(
+                        render_probability_bar(
+                            result["class_1_probability"],
+                            "Stress-task proxy",
+                            "rose" if result["prediction"] == 1 else "teal",
+                        ),
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(
+                        render_probability_bar(
+                            result["class_0_probability"],
+                            "Rest-task proxy",
+                            "cyan",
+                        ),
+                        unsafe_allow_html=True,
+                    )
+
+                    with st.expander("View extracted 19 facial features"):
+                        feature_df = pd.DataFrame(
+                            [result["features"]]
+                        )
+                        st.dataframe(
+                            feature_df,
+                            width="stretch",
+                            hide_index=True,
+                        )
+
+                    st.warning(
+                        "Research limitation: These probabilities represent "
+                        "task-associated class predictions from the trained "
+                        "UBFC-Phys model. They are not clinical stress "
+                        "measurements or a psychological diagnosis."
+                    )
+
+                except Exception as exc:
+                    st.error(f"Video analysis failed: {exc}")
+
+        else:
+            st.caption(
+                "Upload a video of at least 10 seconds, then click "
+                "Analyze Video to run the upper-face model."
+            )
+
+        st.caption(
+            "Live webcam capture is not implemented. "
+            "Uploaded-video inference uses the existing trained upper-face model."
+        )
 
     aligned_v_df = fusion_ad.load_aligned_data()
     subjects_v = fusion_ad.get_subjects()
