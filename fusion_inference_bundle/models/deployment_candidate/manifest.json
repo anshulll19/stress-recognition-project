@@ -1,0 +1,49 @@
+{
+  "created_utc": "2026-10-29T19:20:31.855923+00:00",
+  "dataset": "data/wesad/wesad_binary.npz",
+  "checkpoint": "models/deployment_candidate/classifier.keras",
+  "seed": 42,
+  "max_epochs": 350,
+  "batch_size": 512,
+  "early_stopping_patience": 80,
+  "best_epoch": 27,
+  "best_validation_loss": 0.3092334568500519,
+  "train_subjects": [
+    "S11",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S17",
+    "S2",
+    "S3",
+    "S5",
+    "S7",
+    "S8",
+    "S9"
+  ],
+  "validation_subjects": [
+    "S10",
+    "S4",
+    "S6"
+  ],
+  "train_windows": 649,
+  "validation_windows": 163,
+  "train_class_counts": [
+    505,
+    144
+  ],
+  "class_weights": {
+    "0": 0.6425742574257426,
+    "1": 2.2534722222222223
+  },
+  "input_shape": [
+    3840,
+    1
+  ],
+  "output_classes": {
+    "0": "non-stress",
+    "1": "stress"
+  },
+  "validation_note": "Subject-level validation used for checkpoint selection. This score is not an independent test result and must not be reported as the corrected LOSO performance."
+}

@@ -1,0 +1,32 @@
+{
+  "pipeline_version": "team-runner-v2",
+  "created_utc": "2026-10-22T05:53:21.402576+00:00",
+  "python_version": "3.12.13",
+  "python_executable": "/Users/nishoosingh/stress-recognition-project/video_venv/bin/python",
+  "package_versions": {
+    "numpy": "1.26.4",
+    "scipy": "1.17.1",
+    "pandas": "3.0.6",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2",
+    "opencv-python": "4.11.0",
+    "mediapipe": "0.10.21"
+  },
+  "git_commit": "454e4506194258c610fda7debe849f7280d80156",
+  "git_worktree_dirty": true,
+  "model_path": "/Users/nishoosingh/stress-recognition-project/models/face_landmarker.task",
+  "model_sha256": "64184e229b263107bc2b804c6625db1341ff2bb731874b0bcc2fe6544e0bc9ff",
+  "root": "/Users/nishoosingh/stress-recognition-project/data/ubfc_phys_subset",
+  "stride": 3,
+  "limit_frames": 600,
+  "rppg_enabled": true,
+  "window_seconds": 30,
+  "window_stride_seconds": 10,
+  "elapsed_seconds": 18.87,
+  "subjects_filter": [
+    1
+  ],
+  "outputs": [
+    "/Users/nishoosingh/stress-recognition-project/ubfc_pipeline/out/team_runner_provenance_smoke/s1_T1.npz"
+  ]
+}

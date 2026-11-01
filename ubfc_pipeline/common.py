@@ -16,7 +16,7 @@ TASKS = ["T1", "T2", "T3"]          # rest, speech, arithmetic (verify against t
 TASK_NAMES = {"T1": "rest", "T2": "speech", "T3": "arithmetic"}
 WIN_S, STRIDE_S = 30.0, 10.0
 
-_PAT = re.compile(r"(vid|bvp|eda)_s(\d+)_T(\d)\.(avi|csv)")
+_PAT = re.compile(r"(vid|bvp|eda)_s(\d+)_T(\d)\.(avi|mp4|csv)")
 
 
 def index_files(root):

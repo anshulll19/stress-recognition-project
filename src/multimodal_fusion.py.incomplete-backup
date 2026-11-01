@@ -1,0 +1,95 @@
+"""
+
+multimodal_fusion.py
+
+=====================
+
+Physiology-first, video-assisted multimodal rest-versus-task protocol prediction fusion engine.
+
+Architecture:
+
+1. Physiological inference primary (BVP+EDA via UBFC or WESAD model)
+
+2. Upper-face video inference secondary (19 non-confounded features)
+
+3. Dynamic quality-aware blend:
+
+   - If physio quality OK and face detected:    0.30 physio + 0.70 video
+
+   - If physio degraded (DROPOUT) and face OK:  0.00 physio + 1.00 video (full fallback)
+
+   - If physio OK and no face:                  1.00 physio + 0.00 video
+
+   - If both degraded:                          Return quality_flag='BOTH_DEGRADED'
+
+Features loaded from saved artifacts - does NOT require live hardware.
+
+"""
+
+from __future__ import annotations
+
+import json
+
+import time
+
+from dataclasses import dataclass, field
+
+from pathlib import Path
+
+from typing import Dict, List, Optional, Tuple, Union
+
+import joblib
+
+import numpy as np
+
+import pandas as pd
+
+# ---------------------------------------------------------------------------
+
+# Project root (one level above src/)
+
+# ---------------------------------------------------------------------------
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+# ---------------------------------------------------------------------------
+
+# Lazy import of physiology engines (avoids circular imports)
+
+# ---------------------------------------------------------------------------
+
+def _import_physiology():
+
+    """Return (WESADInferenceEngine, UBFCInferenceEngine, PredictionResult) lazily."""
+
+    import importlib, sys
+
+    # Make sure src/ is on the path when imported as a standalone script
+
+    src_dir = str(Path(__file__).resolve().parent)
+
+    if src_dir not in sys.path:
+
+        sys.path.insert(0, src_dir)
+
+    mod = importlib.import_module("physiology_inference")
+
+    return mod.WESADInferenceEngine, mod.UBFCInferenceEngine, mod.PredictionResult
+
+# ============================================================================
+
+# FusionResult dataclass
+
+# ============================================================================
+
+@dataclass
+
+class FusionResult:
+
+    """Standardized output of the multimodal fusion engine."""
+
+    prediction: int              # 0 = non-stress, 1 = stress
+
+    probability: float           # P(task/stress proxy), fused
+
+    class_name: str              # 'stress' or 'non-stress'
