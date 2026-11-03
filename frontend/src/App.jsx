@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
-import { TABS } from "./data/tabs";
+import { TABS } from "./content/tabs";
 
 // Placeholder until each tab page is built.
 function Placeholder({ title }) {

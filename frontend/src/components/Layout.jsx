@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { TABS } from "../data/tabs";
+import { TABS } from "../content/tabs";
 import styles from "./Layout.module.css";
 
 export default function Layout() {
