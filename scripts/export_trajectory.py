@@ -8,34 +8,32 @@ OUT = Path("frontend/src/content/trajectory.json")
 SUBJECT = "s3"
 FUSED_COL = "p_blend_0.3_uf"
 TASKS = {1: "Rest (T1)", 2: "Speech (T2)", 3: "Math (T3)"}
+WINDOW = 10.0
 
 df = pd.read_csv(SRC)
-sub = df[df["subject_id"] == SUBJECT].sort_values("window_start_sec")
+sub = df[df["subject_id"] == SUBJECT]
 if sub.empty:
     raise SystemExit(f"No rows found for subject {SUBJECT}")
 
-points = [
-    {
-        "t": float(r["window_start_sec"]),
-        "physio": round(float(r["p_physio"]), 4),
-        "video": round(float(r["p_video"]), 4),
-        "fused": round(float(r[FUSED_COL]), 4),
-    }
-    for r in sub.to_dict("records")
-]
-
-tasks = []
+points, tasks = [], []
+offset = 0.0
 for tid, name in TASKS.items():
-    m = sub[sub["task"] == tid]
-    if not m.empty:
-        tasks.append(
+    part = sub[sub["task"] == tid].sort_values("window_start_sec")
+    if part.empty:
+        continue
+    base = float(part["window_start_sec"].iloc[0])
+    for r in part.to_dict("records"):
+        points.append(
             {
-                "id": tid,
-                "name": name,
-                "start": float(m["window_start_sec"].iloc[0]),
-                "end": float(m["window_start_sec"].iloc[-1]) + 10,
+                "t": round(offset + float(r["window_start_sec"]) - base, 2),
+                "physio": round(float(r["p_physio"]), 4),
+                "video": round(float(r["p_video"]), 4),
+                "fused": round(float(r[FUSED_COL]), 4),
             }
         )
+    length = float(part["window_start_sec"].iloc[-1]) - base + WINDOW
+    tasks.append({"id": tid, "name": name, "start": offset, "end": offset + length})
+    offset += length
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(
