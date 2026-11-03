@@ -25,15 +25,6 @@
 
 .alert {
   position: relative;
-  overflow: hidden;
-}
-
-.alert::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: var(--high);
 }
 
 /* hero */
@@ -41,10 +32,6 @@
   position: relative;
   min-height: 38rem;
   padding: clamp(1.25rem, 3vw, 2.25rem);
-  background: var(--surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-  overflow: hidden;
 }
 
 .heroTitle {
@@ -375,20 +362,9 @@
 }
 
 .callout {
-  position: relative;
-  overflow: hidden;
-  padding: 1rem 1.25rem 1rem 1.5rem;
+  padding: 1rem 1.25rem;
   line-height: 1.6;
   background: var(--accent-soft);
-  border-radius: var(--radius-md);
-}
-
-.callout::before {
-  content: "";
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 4px;
-  background: var(--accent);
 }
 
 .notice {
