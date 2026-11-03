@@ -32,28 +32,65 @@ function CardHead({ title, subtitle, badge }) {
   );
 }
 
+function Orb() {
+  return (
+    <svg viewBox="0 0 400 400" className={styles.orb} aria-hidden="true">
+      <defs>
+        <radialGradient id="orbGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.55" />
+          <stop offset="60%" stopColor="#d8d2ec" stopOpacity="0.35" />
+          <stop offset="100%" stopColor="#efecfa" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="200" cy="200" r="190" fill="url(#orbGlow)" />
+      <circle cx="200" cy="200" r="150" fill="none" stroke="#b8aed8" strokeOpacity="0.5" />
+      <circle cx="200" cy="200" r="110" fill="none" stroke="#b8aed8" strokeOpacity="0.6" />
+      <circle cx="200" cy="200" r="70" fill="#9e94c4" fillOpacity="0.35" />
+      <path
+        d="M40 200 H130 L150 160 L180 250 L205 130 L230 220 L250 200 H360"
+        fill="none"
+        stroke="#6d57d8"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function Overview() {
   const clock = useClock();
 
   return (
     <div className={styles.overview}>
-      <div className={styles.intro}>
-        <h1>{O.title}</h1>
-        <p>{O.subtitle}</p>
-      </div>
+      <div className={styles.layout}>
+        <div className={styles.main}>
+          <section className={styles.hero}>
+            <h1 className={styles.heroTitle}>
+              Multimodal<span>&amp;</span>
+              <br />
+              Stress Monitoring
+            </h1>
+            <p className={styles.heroSub}>{O.subtitle}</p>
+            <Orb />
+            {O.highlights.map((h, i) => (
+              <div key={h.label} className={`${styles.chip} ${styles["chip" + i]}`}>
+                <span className={styles.chipValue}>{h.value}</span>
+                <span className={styles.chipLabel}>{h.label}</span>
+              </div>
+            ))}
+          </section>
 
-      <section className={styles.engines}>
-        {O.engines.map((e) => (
-          <div key={e.label} className={styles.card}>
-            <p className={styles.engineLabel}>{e.label}</p>
-            <p className={styles.engineValue}>{e.value}</p>
-            <p className={styles.engineNote}>{e.note}</p>
-          </div>
-        ))}
-      </section>
+          <section className={styles.engines}>
+            {O.engines.map((e) => (
+              <div key={e.label} className={styles.card}>
+                <p className={styles.engineLabel}>{e.label}</p>
+                <p className={styles.engineValue}>{e.value}</p>
+                <p className={styles.engineNote}>{e.note}</p>
+              </div>
+            ))}
+          </section>
 
-      <div className={styles.grid}>
-        <div className={styles.col}>
           <section className={styles.card}>
             <CardHead title={O.status.title} subtitle={O.status.subtitle} badge={O.status.badge} />
             <p className={styles.body}>
@@ -67,20 +104,22 @@ export default function Overview() {
               ))}
             </ul>
           </section>
-
-          <section className={styles.card}>
-            <CardHead
-              title={O.trajectory.title}
-              subtitle={O.trajectory.subtitle}
-              badge={O.trajectory.badge}
-            />
-            <div className={styles.chart}>
-              Trajectory chart goes here once we wire in the session data.
-            </div>
-          </section>
         </div>
 
-        <div className={styles.col}>
+        <aside className={styles.side}>
+          <section className={styles.panel}>
+            <div className={styles.panelHead}>
+              <div>
+                <h2 className={styles.panelTitle}>{O.trajectory.title}</h2>
+                <p className={styles.panelSub}>{O.trajectory.subtitle}</p>
+              </div>
+              <span className={styles.pill} data-tone="glass">
+                {O.trajectory.badge}
+              </span>
+            </div>
+            <div className={styles.plot}>Trajectory chart goes here once the session data is wired in.</div>
+          </section>
+
           <section className={styles.card}>
             <CardHead title={O.telemetry.title} subtitle={O.telemetry.subtitle} />
             <dl className={styles.rows}>
@@ -95,13 +134,6 @@ export default function Overview() {
                 </div>
               ))}
             </dl>
-          </section>
-
-          <section className={`${styles.card} ${styles.alert}`}>
-            <h2 className={styles.cardTitle}>{O.integrity.title}</h2>
-            <p className={styles.body} style={{ marginTop: "0.75rem" }}>
-              <Rich parts={O.integrity.parts} />
-            </p>
           </section>
 
           <section className={styles.card}>
@@ -122,10 +154,17 @@ export default function Overview() {
             </dl>
           </section>
 
+          <section className={`${styles.card} ${styles.alert}`}>
+            <h2 className={styles.cardTitle}>{O.integrity.title}</h2>
+            <p className={styles.body} style={{ marginTop: "0.75rem" }}>
+              <Rich parts={O.integrity.parts} />
+            </p>
+          </section>
+
           <aside className={styles.callout}>
             <strong>{O.architecture.title}</strong> {O.architecture.text}
           </aside>
-        </div>
+        </aside>
       </div>
 
       <p className={styles.notice}>
