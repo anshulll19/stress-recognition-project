@@ -16,7 +16,7 @@ export default function Layout() {
               fill="none"
             />
           </svg>
-          <span>VitalPulse</span>
+          <span>StressSense</span>
         </div>
 
         <nav className={styles.nav} aria-label="Dashboard sections">
