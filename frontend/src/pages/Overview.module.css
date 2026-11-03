@@ -84,6 +84,7 @@
   object-fit: contain;
   object-position: bottom;
   mix-blend-mode: multiply;
+  filter: brightness(1.12) contrast(1.05);
   -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
 }
@@ -232,7 +233,7 @@
   padding: clamp(1rem, 2vw, 1.5rem);
   color: #fff;
   background: linear-gradient(160deg, #cdc5ea 0%, #a396d0 100%);
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   box-shadow: var(--shadow);
 }
 

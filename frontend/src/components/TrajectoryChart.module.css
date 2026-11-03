@@ -3,7 +3,7 @@
   padding: 0.75rem;
   color: var(--ink);
   background: rgba(255, 255, 255, 0.92);
-  border-radius: var(--radius-md);
+  border-radius: 0;
 }
 
 .chart {

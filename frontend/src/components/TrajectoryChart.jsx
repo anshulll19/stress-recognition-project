@@ -33,6 +33,7 @@ export default function TrajectoryChart() {
                 x2={t.end}
                 fill={TASK_COLORS[t.id]}
                 fillOpacity={0.12}
+                stroke="none"
               />
             ))}
             <ReferenceLine y={0.5} stroke="#6b6b7b" strokeDasharray="3 3" />
