@@ -16,7 +16,10 @@ export default function Layout() {
               fill="none"
             />
           </svg>
-          <span>StressSense</span>
+          <div className={styles.brandText}>
+            <span>StressSense</span>
+            <small className={styles.tagline}>Multimodal &amp; Stress Monitoring</small>
+          </div>
         </div>
 
         <nav className={styles.nav} aria-label="Dashboard sections">
