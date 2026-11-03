@@ -7,5 +7,5 @@ export const TABS = [
   { to: "/physiological", label: "Physiological Monitoring", icon: HeartPulse },
   { to: "/facial", label: "Facial Analysis", icon: ScanFace },
   { to: "/multimodal", label: "Multimodal Prediction", icon: Layers },
-  { to: "/trends", label: "Trends", icon: TrendingUp }, // TODO: use the full name of your last tab
+  { to: "/trends", label: "Trends & Research", icon: TrendingUp },
 ];
