@@ -63,10 +63,9 @@
 
 .orb {
   position: absolute;
-  left: 57%;
-  top: 52%;
-  width: min(20rem, 55%);
-  transform: translate(-50%, -50%);
+  right: 20%;
+  bottom: 0;
+  width: min(19rem, 48%);
 }
 
 .chip {
