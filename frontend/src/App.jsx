@@ -2,6 +2,12 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import { TABS } from "./content/tabs";
 import Overview from "./pages/Overview";
+import Physiological from "./pages/Physiological";
+
+const PAGES = {
+  "/": <Overview />,
+  "/physiological": <Physiological />,
+};
 
 // Placeholder until each tab page is built.
 function Placeholder({ title }) {
@@ -13,7 +19,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         {TABS.map(({ to, label }) => (
-          <Route key={to} path={to} element={to === "/" ? <Overview /> : <Placeholder title={label} />} />
+          <Route key={to} path={to} element={PAGES[to] ?? <Placeholder title={label} />} />
         ))}
       </Route>
     </Routes>
