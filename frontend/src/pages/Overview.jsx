@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { OVERVIEW as O } from "../content/overview";
 import styles from "./Overview.module.css";
+import TrajectoryChart from "../components/TrajectoryChart";
 
 function Rich({ parts }) {
   return parts.map((p, i) => (p.b ? <strong key={i}>{p.t}</strong> : <span key={i}>{p.t}</span>));
@@ -125,7 +126,7 @@ export default function Overview() {
                 {O.trajectory.badge}
               </span>
             </div>
-            <div className={styles.plot}>Trajectory chart goes here once the session data is wired in.</div>
+            <TrajectoryChart />
           </section>
 
           <section className={styles.card}>
