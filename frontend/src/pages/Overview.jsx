@@ -32,50 +32,6 @@ function CardHead({ title, subtitle, badge }) {
   );
 }
 
-function Orb() {
-  return (
-    <svg viewBox="0 0 400 520" className={styles.orb} aria-hidden="true">
-      <defs>
-        <linearGradient id="headFade" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#14141a" stopOpacity="1" />
-          <stop offset="65%" stopColor="#14141a" stopOpacity="1" />
-          <stop offset="100%" stopColor="#14141a" stopOpacity="0" />
-        </linearGradient>
-        <radialGradient id="headGlow" cx="50%" cy="45%" r="55%">
-          <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.35" />
-          <stop offset="100%" stopColor="#efecfa" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      <circle cx="200" cy="240" r="230" fill="url(#headGlow)" />
-
-      <path
-        d="M70 520 C90 440 120 410 125 370 C60 340 40 250 70 170 C100 90 190 50 255 75 C305 95 322 145 325 185 L328 205 C340 232 352 252 350 262 L330 268 C334 278 338 284 332 290 C338 298 336 304 328 308 C334 318 330 336 316 344 C300 352 285 360 280 380 C276 410 285 440 330 470 L400 520 Z"
-        fill="url(#headFade)"
-      />
-
-      {/* forehead node */}
-      <line x1="264" y1="150" x2="400" y2="150" stroke="#a78bfa" strokeOpacity="0.6" />
-      <circle cx="240" cy="150" r="24" fill="#fff" fillOpacity="0.12" stroke="#fff" strokeOpacity="0.5" />
-      <path
-        d="M240 160 C230 156 228 146 234 141 C237 144 239 146 240 150 C241 146 243 144 246 141 C252 146 250 156 240 160 Z"
-        fill="#fff"
-      />
-
-      {/* back-of-head node */}
-      <line x1="101" y1="270" x2="0" y2="270" stroke="#a78bfa" strokeOpacity="0.6" />
-      <circle cx="125" cy="270" r="24" fill="#fff" fillOpacity="0.12" stroke="#fff" strokeOpacity="0.5" />
-      <path
-        d="M111 270 H120 L124 260 L129 280 L134 266 L137 270 H141"
-        fill="none"
-        stroke="#fff"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 export default function Overview() {
   const clock = useClock();
@@ -91,7 +47,42 @@ export default function Overview() {
               Stress Monitoring
             </h1>
             <p className={styles.heroSub}>{O.subtitle}</p>
-            <Orb />
+            <div className={styles.orb}>
+              <img src="/head.png" alt="" className={styles.head} />
+              <span className={`${styles.node} ${styles.nodeTop}`}>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path
+                    d="M12 20c-4-1.5-6-5-4-8 1.2 1 2.8 1.8 4 3 1.2-1.2 2.8-2 4-3 2 3 0 6.500-4 8z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </span>
+              <span className={`${styles.node} ${styles.nodeSide}`}>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                  <path
+                    d="M3 12h4l2-5 3 10 3-8 2 3h4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <div className={styles.glassPill}>
+                <strong>89.9%</strong>
+                <small>WESAD LOSO</small>
+                <svg viewBox="0 0 80 24" width="64" height="20" aria-hidden="true">
+                  <path
+                    d="M0 12 C8 2 14 22 22 12 S36 2 44 12 S58 22 66 12 S76 8 80 12"
+                    fill="none"
+                    stroke="#9e94c4"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+            </div>
             {O.highlights.map((h, i) => (
               <div key={h.label} className={`${styles.chip} ${styles["chip" + i]}`}>
                 <span className={styles.chipValue}>{h.value}</span>

@@ -63,9 +63,87 @@
 
 .orb {
   position: absolute;
-  right: 20%;
+  right: 14%;
   bottom: 0;
-  width: min(19rem, 48%);
+  width: min(24rem, 52%);
+  aspect-ratio: 4 / 5;
+}
+
+.head {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom;
+  mix-blend-mode: multiply;
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+}
+
+.node {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(20, 20, 40, 0.35);
+}
+
+.node::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 7rem;
+  height: 1px;
+  background: var(--lav-300);
+}
+
+.nodeTop {
+  top: 22%;
+  left: 48%;
+}
+
+.nodeTop::after {
+  left: 100%;
+}
+
+.nodeSide {
+  top: 52%;
+  left: 12%;
+}
+
+.nodeSide::after {
+  right: 100%;
+}
+
+.glassPill {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.1rem;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+}
+
+.glassPill strong {
+  font-size: 1.3rem;
+  font-weight: 300;
+}
+
+.glassPill small {
+  font-size: 0.7rem;
+  color: var(--ink-2);
 }
 
 .chip {
