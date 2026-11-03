@@ -24,7 +24,16 @@
 }
 
 .alert {
-  border-top: 3px solid var(--high);
+  position: relative;
+  overflow: hidden;
+}
+
+.alert::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--high);
 }
 
 /* hero */
@@ -365,11 +374,20 @@
 }
 
 .callout {
-  padding: 1rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+  padding: 1rem 1.25rem 1rem 1.5rem;
   line-height: 1.6;
   background: var(--accent-soft);
-  border-left: 4px solid var(--accent);
   border-radius: var(--radius-md);
+}
+
+.callout::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--accent);
 }
 
 .notice {
