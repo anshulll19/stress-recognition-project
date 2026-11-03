@@ -27,6 +27,19 @@
   height: 1.6em;
 }
 
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.tagline {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+
 .nav {
   display: flex;
   gap: 0.25rem;

@@ -42,9 +42,7 @@ export default function Overview() {
         <div className={styles.main}>
           <section className={styles.hero}>
             <h1 className={styles.heroTitle}>
-              Multimodal<span>&amp;</span>
-              <br />
-              Stress Monitoring
+              Overview
             </h1>
             <p className={styles.heroSub}>{O.subtitle}</p>
             <div className={styles.orb}>
