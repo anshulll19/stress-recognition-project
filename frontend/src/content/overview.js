@@ -2,6 +2,13 @@ export const OVERVIEW = {
   title: "Multimodal Stress Monitoring Overview",
   subtitle: "Offline benchmark evaluation and synchronized multimodal replay overview",
 
+  highlights: [
+    { value: "98.2%", label: "UBFC Rest-Calib RF" },
+    { value: "96.8%", label: "Upper-Face RF (19f)" },
+    { value: "89.9%", label: "WESAD LOSO accuracy" },
+    { value: "71", label: "Benchmark subjects" },
+  ],
+
   engines: [
     { label: "Physiology Engine", value: "Active", note: "BVP (64Hz) + EDA (4Hz) Pipelines" },
     { label: "Video Engine", value: "Active", note: "19-Feature Clean Upper-Face Model" },
