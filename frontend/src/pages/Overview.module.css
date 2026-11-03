@@ -30,7 +30,7 @@
 /* hero */
 .hero {
   position: relative;
-  min-height: 32rem;
+  min-height: 38rem;
   padding: clamp(1.25rem, 3vw, 2.25rem);
   background: var(--surface);
   border-radius: var(--radius-lg);
@@ -63,9 +63,9 @@
 
 .orb {
   position: absolute;
-  right: 14%;
+  right: 22%;
   bottom: 0;
-  width: min(24rem, 52%);
+  width: min(30rem, 62%);
   aspect-ratio: 4 / 5;
 }
 
@@ -112,8 +112,8 @@
 }
 
 .nodeSide {
-  top: 52%;
-  left: 12%;
+  top: 40%;
+  left: 28%;
 }
 
 .nodeSide::after {
