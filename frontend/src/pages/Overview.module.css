@@ -63,9 +63,9 @@
 
 .orb {
   position: absolute;
-  left: 50%;
-  top: 54%;
-  width: min(26rem, 70%);
+  left: 57%;
+  top: 52%;
+  width: min(20rem, 55%);
   transform: translate(-50%, -50%);
 }
 

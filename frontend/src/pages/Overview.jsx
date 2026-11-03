@@ -34,22 +34,31 @@ function CardHead({ title, subtitle, badge }) {
 
 function Orb() {
   return (
-    <svg viewBox="0 0 400 400" className={styles.orb} aria-hidden="true">
+    <svg viewBox="0 0 400 480" className={styles.orb} aria-hidden="true">
       <defs>
-        <radialGradient id="orbGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.55" />
-          <stop offset="60%" stopColor="#d8d2ec" stopOpacity="0.35" />
+        <linearGradient id="headFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#6d57d8" stopOpacity="0.9" />
+          <stop offset="55%" stopColor="#a78bfa" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#d8d2ec" stopOpacity="0" />
+        </linearGradient>
+        <radialGradient id="headGlow" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.3" />
           <stop offset="100%" stopColor="#efecfa" stopOpacity="0" />
         </radialGradient>
       </defs>
-      <circle cx="200" cy="200" r="190" fill="url(#orbGlow)" />
-      <circle cx="200" cy="200" r="150" fill="none" stroke="#b8aed8" strokeOpacity="0.5" />
-      <circle cx="200" cy="200" r="110" fill="none" stroke="#b8aed8" strokeOpacity="0.6" />
-      <circle cx="200" cy="200" r="70" fill="#9e94c4" fillOpacity="0.35" />
+      <circle cx="200" cy="230" r="210" fill="url(#headGlow)" />
       <path
-        d="M40 200 H130 L150 160 L180 250 L205 130 L230 220 L250 200 H360"
+        d="M90 480 C100 420 110 380 100 340 C60 300 50 220 80 150 C110 80 200 50 260 80 C300 100 315 150 318 190 L322 215 C340 250 352 275 340 282 L322 288 C326 300 330 305 322 312 C330 322 328 332 318 336 C322 350 316 372 290 380 C270 385 262 400 262 420 L275 480 Z"
+        fill="url(#headFill)"
+      />
+      <circle cx="235" cy="165" r="22" fill="#fff" fillOpacity="0.25" />
+      <circle cx="235" cy="165" r="9" fill="#fff" />
+      <circle cx="165" cy="270" r="18" fill="#fff" fillOpacity="0.25" />
+      <circle cx="165" cy="270" r="7" fill="#fff" />
+      <path
+        d="M120 330 H170 L185 305 L205 355 L225 290 L245 335 H300"
         fill="none"
-        stroke="#6d57d8"
+        stroke="#fff"
         strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
