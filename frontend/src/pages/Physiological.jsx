@@ -40,13 +40,14 @@ export default function Physiological() {
   const [participant, setParticipant] = useState(index.participants[0]);
   const [model, setModel] = useState(index.models.includes("LSTM") ? "LSTM" : index.models[0]);
   const [win, setWin] = useState(0);
-  const [data, setData] = useState(null);
+  const [loaded, setLoaded] = useState({ participant: null, data: null });
+  const data = loaded.participant === participant ? loaded.data : null;
 
   useEffect(() => {
     let alive = true;
-    setData(null);
+
     loaders[`../content/physio/p${participant}.json`]().then((m) => {
-      if (alive) setData(m.default);
+      if (alive) setLoaded({ participant, data: m.default });
     });
     return () => {
       alive = false;
