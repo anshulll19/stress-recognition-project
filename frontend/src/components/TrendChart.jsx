@@ -33,21 +33,30 @@ function Tip({ active, payload, task }) {
       Window {i} · {t}s
       <br />
       P(distress) {p == null ? "—" : `${(p * 100).toFixed(1)}%`}
-      <br />
-      {TASK_NAME[task[i]] ?? "—"}
+      {task && (
+        <>
+          <br />
+          {TASK_NAME[task[i]] ?? "—"}
+        </>
+      )}
     </div>
   );
 }
 
-// probs: probability per window (null when missing); task: task id per window;
-// win: current window index; K: rolling window length; summary: text for screen readers and the caption.
-export default function TrendChart({ probs, task, win, K, summary }) {
+// probs: probability per window (null when missing); task: task id per window, or null
+// when the series has no protocol tasks (synthetic cases); win: current window index;
+// K: rolling window length; summary: caption text for the chart.
+export default function TrendChart({
+  probs,
+  task = null,
+  win,
+  K,
+  summary,
+  xLabel = "Time from recording start (seconds)",
+}) {
   const activeStart = Math.max(0, win - K + 1);
   const maxT = (probs.length - 1) * STEP_S;
-  const ticks = Array.from(
-    { length: Math.floor(maxT / 60) + 1 },
-    (_, i) => i * 60,
-  );
+  const ticks = Array.from({ length: Math.floor(maxT / 60) + 1 }, (_, i) => i * 60);
 
   // Causal: only windows up to the current one are drawn. The x axis stays fixed so it doesn't jump.
   const rows = useMemo(
@@ -58,11 +67,12 @@ export default function TrendChart({ probs, task, win, K, summary }) {
         history: i <= activeStart ? p : null,
         active: i >= activeStart ? p : null,
       })),
-    [probs, win, activeStart],
+    [probs, win, activeStart]
   );
 
-  // Shaded bands for each task segment seen so far.
+  // Shaded bands for each task segment seen so far (none when there are no tasks).
   const bands = useMemo(() => {
+    if (!task) return [];
     const out = [];
     let s = 0;
     for (let i = 1; i <= win + 1; i++) {
@@ -85,10 +95,7 @@ export default function TrendChart({ probs, task, win, K, summary }) {
       <figcaption className={styles.caption}>{summary}</figcaption>
       <div className={styles.plot}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={rows}
-            margin={{ top: 8, right: 16, bottom: 20, left: 4 }}
-          >
+          <LineChart data={rows} margin={{ top: 8, right: 16, bottom: 20, left: 4 }}>
             <CartesianGrid stroke={COLORS.grid} strokeDasharray="3 4" />
             {bands.map((b, i) => (
               <ReferenceArea
@@ -108,7 +115,7 @@ export default function TrendChart({ probs, task, win, K, summary }) {
               ticks={ticks}
               tick={{ fill: COLORS.text, fontSize: 12 }}
               label={{
-                value: "Time from recording start (seconds)",
+                value: xLabel,
                 position: "insideBottom",
                 offset: -12,
                 fill: COLORS.text,
@@ -168,28 +175,20 @@ export default function TrendChart({ probs, task, win, K, summary }) {
           Past history
         </li>
         <li>
-          <span
-            className={styles.swatchLine}
-            style={{ borderColor: COLORS.active }}
-          />
+          <span className={styles.swatchLine} style={{ borderColor: COLORS.active }} />
           Active {K}-window slope range
         </li>
         <li>
-          <span
-            className={styles.swatchDot}
-            style={{ background: COLORS.current }}
-          />
+          <span className={styles.swatchDot} style={{ background: COLORS.current }} />
           Current window
         </li>
-        {[1, 2, 3].map((id) => (
-          <li key={id}>
-            <span
-              className={styles.swatchBand}
-              style={{ background: TASK_FILL[id] }}
-            />
-            {TASK_NAME[id]}
-          </li>
-        ))}
+        {task &&
+          [1, 2, 3].map((id) => (
+            <li key={id}>
+              <span className={styles.swatchBand} style={{ background: TASK_FILL[id] }} />
+              {TASK_NAME[id]}
+            </li>
+          ))}
       </ul>
     </figure>
   );
