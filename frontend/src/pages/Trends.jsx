@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import BenchmarkTable from "../components/BenchmarkTable";
 import TrendChart from "../components/TrendChart";
+import SyntheticTrend from "./SyntheticTrend";
 import index from "../content/trend/index.json";
 import { TRENDS_COPY as C } from "../content/trends";
 import { TREND_LABELS, TREND_RULES } from "../content/trendLabels";
@@ -228,10 +229,7 @@ export default function Trends() {
         {source === "real" ? (
           <RealTrend />
         ) : (
-          <p className={styles.notice}>
-            The synthetic verification cases are added in a later commit, together with the
-            patterns this detector is known to fail on.
-          </p>
+          <SyntheticTrend />
         )}
 
         <details className={styles.details}>
