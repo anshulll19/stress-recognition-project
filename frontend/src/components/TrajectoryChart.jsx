@@ -24,7 +24,10 @@ export default function TrajectoryChart() {
     <div className={styles.wrap}>
       <div className={styles.chart}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={points} margin={{ top: 8, right: 12, bottom: 4, left: -8 }}>
+          <LineChart
+            data={points}
+            margin={{ top: 8, right: 12, bottom: 4, left: -8 }}
+          >
             <CartesianGrid stroke="#e9e9f1" vertical={false} />
             {tasks.map((t) => (
               <ReferenceArea
@@ -50,7 +53,10 @@ export default function TrajectoryChart() {
               tickFormatter={(v) => `${v * 100}%`}
               stroke="#6b6b7b"
             />
-            <Tooltip formatter={(v, name) => [pct(v), name]} labelFormatter={(t) => `${t}s`} />
+            <Tooltip
+              formatter={(v, name) => [pct(v), name]}
+              labelFormatter={(t) => `${t}s`}
+            />
             <Legend />
             <Line
               dataKey="physio"
@@ -62,7 +68,7 @@ export default function TrajectoryChart() {
             />
             <Line
               dataKey="video"
-              name="Video (Full)"
+              name="Video (Upper-Face)"
               stroke="#c98206"
               strokeWidth={1.4}
               strokeDasharray="5 4"
@@ -84,7 +90,10 @@ export default function TrajectoryChart() {
       <ul className={styles.tasks}>
         {tasks.map((t) => (
           <li key={t.id}>
-            <span className={styles.dot} style={{ background: TASK_COLORS[t.id] }} />
+            <span
+              className={styles.dot}
+              style={{ background: TASK_COLORS[t.id] }}
+            />
             {t.name}
           </li>
         ))}
