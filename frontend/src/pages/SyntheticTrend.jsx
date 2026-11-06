@@ -67,8 +67,9 @@ export default function SyntheticTrend() {
       </section>
 
       <p className={styles.notice}>
-        These three patterns are cases the detector handles. The caveat above lists patterns it
-        failed on (gradual ramp, fluctuating signal, abrupt step). Those are not in this selector.
+        These three patterns are cases the detector handles. The caveat above
+        lists patterns it failed on (gradual ramp, fluctuating signal, abrupt
+        step). Those are not in this selector.
       </p>
 
       <div className={styles.metrics}>
@@ -82,7 +83,9 @@ export default function SyntheticTrend() {
             />
             {planted.label}
           </p>
-          <p className={styles.metricNote}>What the generator put into the series</p>
+          <p className={styles.metricNote}>
+            What the generator put into the series
+          </p>
         </div>
 
         <div className={styles.card}>
@@ -105,7 +108,7 @@ export default function SyntheticTrend() {
           </p>
           <p className={styles.metricNote}>
             {sufficient && slope != null
-              ? `90% CI: [${sign(pattern.lo[w])}, ${sign(pattern.hi[w])}]`
+              ? `90% CI: [${sign(pattern.lo[w])}, ${sign(pattern.hi[w])}]${pattern.hi[w] - pattern.lo[w] < 0.01 ? ". Narrow because this synthetic series has no noise." : ""}`
               : `Cold start: ${w + 1} of ${K} windows so far`}
           </p>
         </div>
@@ -116,7 +119,8 @@ export default function SyntheticTrend() {
             {sufficient ? "Sufficient" : "Insufficient data"}
           </p>
           <p className={styles.metricNote}>
-            {pattern.nValid[w]} of {K} windows valid (needs {TREND_RULES.minValidWindows})
+            {pattern.nValid[w]} of {K} windows valid (needs{" "}
+            {TREND_RULES.minValidWindows})
           </p>
         </div>
       </div>
