@@ -27,7 +27,7 @@ for tid, name in TASKS.items():
             {
                 "t": round(offset + float(r["window_start_sec"]) - base, 2),
                 "physio": round(float(r["p_physio"]), 4),
-                "video": round(float(r["p_video"]), 4),
+                "video": round(float(r["p_video_upperface"]), 4),
                 "fused": round(float(r[FUSED_COL]), 4),
             }
         )
