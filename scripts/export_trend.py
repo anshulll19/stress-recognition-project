@@ -69,9 +69,9 @@ for p in participants:
         res = adapter.evaluate_series(probs)
         out_models[m] = {
             "p": [num(v, 4) for v in probs],
-            "slope": [num(v, 3) for v in res["slope"]],
-            "lo": [num(v, 3) for v in res["lo"]],
-            "hi": [num(v, 3) for v in res["hi"]],
+            "slope": [num(v, 4) for v in res["slope"]],
+            "lo": [num(v, 4) for v in res["lo"]],
+            "hi": [num(v, 4) for v in res["hi"]],
             "nValid": res["n_valid"].tolist(),
             "sufficient": [bool(v) for v in res["is_sufficient"]],
             "raw": [int(v) for v in res["raw"]],
