@@ -3,10 +3,12 @@ import Layout from "./components/Layout";
 import { TABS } from "./content/tabs";
 import Overview from "./pages/Overview";
 import Physiological from "./pages/Physiological";
+import Trends from "./pages/Trends";
 
 const PAGES = {
   "/": <Overview />,
   "/physiological": <Physiological />,
+  "/trends": <Trends />,
 };
 
 // Placeholder until each tab page is built.
