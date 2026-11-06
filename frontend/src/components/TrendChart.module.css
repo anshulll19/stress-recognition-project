@@ -1,0 +1,66 @@
+.figure {
+  margin: 0;
+  padding: clamp(0.75rem, 1.6vw, 1.25rem);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.caption {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.plot {
+  height: clamp(14rem, 32vw, 22rem);
+  min-width: 0;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.swatchLine {
+  width: 1.5rem;
+  border-top: 3px solid;
+}
+
+.dashed {
+  border-top-style: dashed;
+}
+
+.swatchDot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+}
+
+.swatchBand {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 1px solid var(--line);
+}
+
+.tip {
+  padding: 0.5rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
