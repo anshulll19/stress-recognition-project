@@ -49,7 +49,13 @@ for p in participants:
     idx = np.where(groups == p)[0]
     task = meta.loc[idx, "task"].astype(int).tolist()
     start = [num(v, 1) for v in meta.loc[idx, "start_s"]]
-    if any(b < a for a, b in zip(start, start[1:])):
+    # start_s restarts at 0 in each task, so only compare windows inside the same task,
+    # and make sure the task sequence never goes backwards (1, 2, 3).
+    bad_order = any(
+        tb < ta or (tb == ta and sb < sa)
+        for ta, tb, sa, sb in zip(task, task[1:], start, start[1:])
+    )
+    if bad_order:
         raise SystemExit(f"participant {p}: windows are not in time order. Paste this to Claude.")
 
     # True when the last K windows cover more than one task (slope straddles a task change)
