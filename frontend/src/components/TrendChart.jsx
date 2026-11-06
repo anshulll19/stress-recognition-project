@@ -37,7 +37,8 @@ function Tip({ active, payload, task }) {
 // win: current window index; K: rolling window length; summary: text for screen readers and the caption.
 export default function TrendChart({ probs, task, win, K, summary }) {
   const activeStart = Math.max(0, win - K + 1);
-  const maxT = (probs.length - 1) * STEP_S;
+    const maxT = (probs.length - 1) * STEP_S;
+  const ticks = Array.from({ length: Math.floor(maxT / 60) + 1 }, (_, i) => i * 60);
 
   // Causal: only windows up to the current one are drawn. The x axis stays fixed so it doesn't jump.
   const rows = useMemo(
@@ -80,7 +81,8 @@ export default function TrendChart({ probs, task, win, K, summary }) {
             <XAxis
               type="number"
               dataKey="t"
-              domain={[0, maxT]}
+                            domain={[0, maxT]}
+              ticks={ticks}
               tick={{ fill: COLORS.text, fontSize: 12 }}
               label={{ value: "Time from recording start (seconds)", position: "insideBottom", offset: -12, fill: COLORS.text, fontSize: 12 }}
             />
