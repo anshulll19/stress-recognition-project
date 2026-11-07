@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&display=swap");
+
+:root {
+  /* Serenova palette */
+  --bg: #f6f6fa;
+  --surface: #ffffff;
+  --ink: #14141a;
+  --ink-2: #6b6b7b;
+  --line: #e9e9f1;
+  --lav-200: #d8d2ec;
+  --lav-300: #b8aed8;
+  --lav-500: #9e94c4;
+  --accent: #a78bfa;
+  --accent-deep: #6d57d8;
+  --accent-soft: #efecfa;
+
+  /* status colors */
+  --good: #1fae5b;
+  --good-bg: #e3f7ec;
+  --warn: #c98206;
+  --warn-bg: #fdf1d9;
+  --high: #d63b3b;
+  --high-bg: #fde6e6;
+
+  /* shape and spacing */
+  --radius-lg: 0;
+  --radius-md: 0;
+  --radius-pill: 999px;
+  --shadow: 0 1px 2px rgba(20, 20, 40, 0.04), 0 10px 28px rgba(80, 70, 140, 0.07);
+  --gap: clamp(0.75rem, 1.6vw, 1.5rem);
+  --pad: clamp(1rem, 3.5vw, 3rem);
+  --max-width: 120rem;
+
+  /* type */
+  --font: "Urbanist", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image: radial-gradient(#dcdce6 1px, transparent 1px);
+  background-size: 22px 22px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button,
+select,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
