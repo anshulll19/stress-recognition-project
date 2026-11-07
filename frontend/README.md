@@ -1,16 +1,36 @@
-# React + Vite
+# StressSense frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite replay dashboard for the stress-recognition project. It shows stored benchmark
+results and does not run any model.
 
-Currently, two official plugins are available:
+## Run it
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+    cd frontend
+    npm install
+    npm run dev        # development server
+    npm run build      # production build
+    npm run lint
 
-## React Compiler
+## Where the data comes from
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+All numbers shown on the pages are exported from the repository's result files into
+`frontend/src/content/`. The folder is called `content` (not `data`) because the root
+`.gitignore` ignores any folder named `data/`.
 
-## Expanding the ESLint configuration
+Run these from the repository root to regenerate the exports:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+    python scripts/export_trajectory.py   # Overview session chart (subject s3)
+    python scripts/export_physio.py       # Physiological tab (participants 1-5)
+    python scripts/export_fusion.py       # Multimodal and Facial tabs
+    python scripts/export_confounds.py    # confound ablation table
+    python scripts/export_loso.py         # per-subject LOSO tables
+    python scripts/export_trend.py        # Trends tab, real participants
+    python scripts/export_synthetic.py    # Trends tab, synthetic patterns
+
+## Known gaps
+
+- WESAD per-window replay is unavailable: `data/wesad/wesad_binary.npz` is not in the repository.
+- `models/ubfc_deployment/loso_per_subject.csv` is not in the repository, so that table is omitted.
+- CLAS inference is disabled: there is no trained classification head.
+- The Trends caveat cites 7 of 17 failing synthetic criteria from `reports/PHASE1_PROJECT_STATUS.md`;
+  only three synthetic patterns exist in the repository.
