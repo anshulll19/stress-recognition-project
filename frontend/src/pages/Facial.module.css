@@ -1,0 +1,165 @@
+.radios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.radios legend {
+  margin-bottom: 0.5rem;
+  padding: 0;
+  font-weight: 600;
+}
+
+.radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.radio input {
+  accent-color: var(--accent-deep);
+}
+
+.details {
+  padding: 1rem 1.5rem;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.details summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.detailsBody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  margin-top: 1rem;
+}
+
+.pending {
+  padding: 0.9rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.statusBox {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+  background: var(--accent-soft);
+}
+
+.statusTitle {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.statusRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.pill {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--warn);
+  background: var(--warn-bg);
+  border-radius: var(--radius-pill);
+}
+
+.small {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+  gap: var(--gap);
+  align-items: start;
+}
+
+.side {
+  display: grid;
+  gap: var(--gap);
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.bar {
+  display: grid;
+  gap: 0.3rem;
+  margin-top: 1rem;
+}
+
+.barHead {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.track {
+  height: 0.5rem;
+  background: var(--accent-soft);
+}
+
+.fill {
+  height: 100%;
+  background: #0e9f8e;
+}
+
+.fill[data-tone="high"] {
+  background: var(--high);
+}
+
+.fill[data-tone="warm"] {
+  background: var(--warn);
+}
+
+.note {
+  padding: 0.9rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.noteWarn {
+  color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.noteInfo {
+  color: var(--ink-2);
+  background: var(--accent-soft);
+}
+
+.chartBox {
+  height: 16rem;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 900px) {
+  .twoCol,
+  .detailsBody {
+    grid-template-columns: 1fr;
+  }
+}
