@@ -17,10 +17,10 @@ export const BENCHMARKS = [
   { model: "UBFC Rest-Calib RF", protocol: "Full LOSO (56 subj)", accuracy: 97.9, balancedAcc: 98.2, auroc: 0.994, status: "complete" },
   { model: "Video RF (Full 23-feat)", protocol: "Subject LOSO (18 subj)", accuracy: 96.6, balancedAcc: 96.7, auroc: 0.994, status: "confound", note: "Speech-motion confound" },
   { model: "Video RF (Upper 19-feat)", protocol: "Subject LOSO (18 subj)", accuracy: 91.4, balancedAcc: 90.6, auroc: 0.968, status: "clean" },
-  { model: "Fusion Blend 0.3 (Full)", protocol: "Subject LOSO (18 subj)", accuracy: null, balancedAcc: 97.1, auroc: 0.996, status: "complete" },
+  { model: "Fusion Blend 0.3 (Full)", protocol: "Subject LOSO (18 subj)", accuracy: null, balancedAcc: 97.1, auroc: 0.996, status: "confound", note: "70% weight on full-face video (speech-motion confound)" },
   { model: "Fusion Blend 0.3 (Upper-face)", protocol: "Subject LOSO (18 subj)", accuracy: null, balancedAcc: 81.0, auroc: 0.933, status: "complete" },
   { model: "CLAS → WESAD (cross-dataset)", protocol: "Zero-shot transfer", accuracy: 23.9, balancedAcc: null, auroc: 0.223, status: "failed", note: "Below chance" },
-  // TODO: one more row is hidden by the scroll box in the Streamlit screenshot
+  { model: "WESAD → CLAS (cross-dataset)", protocol: "Zero-shot transfer", accuracy: 62.6, balancedAcc: null, auroc: 0.367, status: "failed", note: "Sub-random" },
 ];
 
 export const BENCHMARK_FOOTNOTE =
