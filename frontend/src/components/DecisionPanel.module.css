@@ -1,0 +1,150 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.heading {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.replay {
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--high);
+  background: var(--high-bg);
+}
+
+.banner {
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.sims {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.check input {
+  accent-color: var(--accent-deep);
+}
+
+.verdict {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.factLabel {
+  font-size: 0.75rem;
+  color: var(--ink-2);
+}
+
+.factValue {
+  margin-top: 0.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.explain {
+  line-height: 1.6;
+}
+
+.warn {
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.caption {
+  font-size: 0.78rem;
+  color: var(--ink-2);
+}
+
+.branches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.branch {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  padding: 1rem;
+  background: var(--accent-soft);
+}
+
+.branchTitle {
+  font-weight: 700;
+}
+
+.bar {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.barHead {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.track {
+  height: 0.45rem;
+  background: var(--surface);
+}
+
+.fill {
+  height: 100%;
+  background: var(--accent-deep);
+}
+
+.note {
+  font-size: 0.8rem;
+  color: var(--ink-2);
+}
+
+.ok {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--good);
+  background: var(--good-bg);
+}
+
+.bad {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--warn);
+  background: var(--warn-bg);
+}
+
+@media (max-width: 800px) {
+  .facts,
+  .branches {
+    grid-template-columns: 1fr;
+  }
+}

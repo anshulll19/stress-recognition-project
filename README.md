@@ -39,3 +39,9 @@ this confirms the architecture and training loop work end-to-end.
 
 See `docs/Project_Workflow.md` Section 4 for the live status snapshot
 (dataset access, phase gates, current assignments).
+
+## Run the demo
+
+    python -m streamlit run app.py
+
+See reports/DEMO_TEST_CHECKLIST.md for the full verification steps.

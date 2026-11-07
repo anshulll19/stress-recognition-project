@@ -1,0 +1,106 @@
+.page {
+  padding: var(--pad);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.logo {
+  width: 1.6em;
+  height: 1.6em;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.tagline {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+
+.nav {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  max-width: 100%;
+  overflow-x: auto;
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow);
+  scrollbar-width: none;
+}
+
+.nav::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.tab:hover {
+  background: #f1f0f7;
+}
+
+.active {
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.statusDot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
