@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import { TABS } from "./content/tabs";
 import Overview from "./pages/Overview";
+import Facial from "./pages/Facial";
 import Multimodal from "./pages/Multimodal";
 import Physiological from "./pages/Physiological";
 import Trends from "./pages/Trends";
@@ -9,6 +10,7 @@ import Trends from "./pages/Trends";
 const PAGES = {
   "/": <Overview />,
   "/physiological": <Physiological />,
+  "/facial": <Facial />,
   "/multimodal": <Multimodal />,
   "/trends": <Trends />,
 };
