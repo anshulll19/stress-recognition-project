@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import BenchmarkTable from "../components/BenchmarkTable";
+import DataTable from "../components/DataTable";
 import TrendChart from "../components/TrendChart";
 import SyntheticTrend from "./SyntheticTrend";
 import index from "../content/trend/index.json";
+import wesadLoso from "../content/loso/wesad.json";
 import { TRENDS_COPY as C } from "../content/trends";
 import { TREND_LABELS, TREND_RULES } from "../content/trendLabels";
 import styles from "./Trends.module.css";
@@ -252,6 +254,41 @@ export default function Trends() {
           <p className={styles.sub}>{C.benchmarkSubtitle}</p>
         </div>
         <BenchmarkTable />
+      </section>
+
+      <section className={styles.section} aria-labelledby="loso-title">
+        <div>
+          <h2 id="loso-title" className={styles.sectionTitle}>Per-subject LOSO results</h2>
+          <p className={styles.sub}>
+            One row per held-out subject, from the stored evaluation files.
+          </p>
+        </div>
+
+        <h3 style={{ fontSize: "1rem", fontWeight: 700 }}>WESAD Corrected LOSO (15 Subjects)</h3>
+        <DataTable label="WESAD corrected LOSO per subject" data={wesadLoso} />
+
+        <p className={styles.notice}>
+          UBFC Deployment LOSO (56 subjects): the per-subject file
+          models/ubfc_deployment/loso_per_subject.csv is not in this repository, so no table is
+          shown (the Streamlit app skips it the same way).
+        </p>
+
+        <div className={styles.caveat} role="note">
+          <strong>Cross-Dataset Hardware Incompatibility (CLAS transfer failure):</strong> CLAS
+          inference is permanently blocked. Evaluation experiments showed cross-dataset transfer
+          failure (AUROC 0.223–0.367) resulting from:
+          <ol>
+            <li>
+              Optical transmission vs wrist reflection sensor physics mismatch (Shimmer3 finger
+              clip vs Empatica E4 wristband)
+            </li>
+            <li>Cognitive load vs Trier Social Stressor task divergence</li>
+            <li>
+              Lack of supervised classification weights in the CLAS self-supervised MAE encoder
+              checkpoint
+            </li>
+          </ol>
+        </div>
       </section>
     </div>
   );
