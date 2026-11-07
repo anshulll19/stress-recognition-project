@@ -4,8 +4,8 @@ export const OVERVIEW = {
     "Offline benchmark evaluation and synchronized multimodal replay overview",
 
   highlights: [
-    { value: "98.2%", label: "UBFC Rest-Calib RF" },
-    { value: "96.8%", label: "Upper-Face RF (19f)" },
+    { value: "98.2%", label: "UBFC Rest-Calib RF · balanced accuracy" },
+    { value: "0.968", label: "Upper-Face RF (19f) · AUROC" },
     { value: "89.9%", label: "WESAD LOSO accuracy" },
     { value: "71", label: "Benchmark subjects" },
   ],
@@ -35,8 +35,8 @@ export const OVERVIEW = {
 
   registry: [
     { name: "WESAD CNN-TCN-LSTM", status: "READY", tone: "good" },
-    { name: "UBFC Rest-Calib RF", status: "98.2%", tone: "good" },
-    { name: "Upper-Face RF (19f)", status: "96.8%", tone: "good" },
+    { name: "UBFC Rest-Calib RF", status: "BAcc 98.2%", tone: "good" },
+    { name: "Upper-Face RF (19f)", status: "AUROC 0.968", tone: "good" },
     { name: "CLAS Cross-Transfer", status: "BLOCKED", tone: "warn" },
   ],
 

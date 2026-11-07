@@ -1,0 +1,87 @@
+.stack {
+  display: grid;
+  gap: var(--gap);
+}
+
+.card {
+  padding: clamp(1rem, 2vw, 1.5rem);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.warn {
+  padding: 1rem 1.25rem;
+  line-height: 1.6;
+  color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.rows {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.75rem 0 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) 2fr;
+  gap: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.key {
+  color: var(--ink-2);
+}
+
+.value {
+  margin: 0;
+  font-weight: 600;
+}
+
+.note {
+  margin-top: 0.75rem;
+  padding: 0.9rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+  background: var(--accent-soft);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  margin-top: 0.75rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.table th,
+.table td {
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.table th {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+@media (max-width: 700px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+}

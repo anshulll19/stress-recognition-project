@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import SignalChart from "../components/SignalChart";
+import OtherCohort from "../components/OtherCohort";
 import index from "../content/physio/index.json";
 import styles from "./Physiological.module.css";
 
@@ -95,9 +96,7 @@ export default function Physiological() {
       </fieldset>
 
       {dataset !== "ubfc" ? (
-        <p className={styles.notice}>
-          This cohort view is built after UBFC-Phys, so it is not available in this version yet.
-        </p>
+        <OtherCohort dataset={dataset} />
       ) : (
         <>
           <section className={styles.controls}>
