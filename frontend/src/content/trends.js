@@ -15,7 +15,7 @@ export const TRENDS_COPY = {
 
   caveatTitle: "Prototype Status & Research Caveats",
   caveat:
-    "This temporal trend detector is an active research prototype. While all mechanical unit checks pass (causality, no future imputation, cold-start handling, and safe anti-flicker hysteresis), several synthetic benchmark acceptance criteria failed during rigorous evaluation (including gradual-ramp sensitivity, fluctuating signal recognition, and abrupt step recovery). The detector is displayed here for experimental inspection with strict safeguards.",
+    "This temporal trend detector is an active research prototype. While all mechanical unit checks pass (causality, no future imputation, cold-start handling, and safe anti-flicker hysteresis), several synthetic benchmark acceptance criteria failed during rigorous evaluation (including gradual-ramp sensitivity, fluctuating signal recognition, and abrupt step recovery). The detector is displayed here for experimental inspection with strict safeguards. The project status report records 11 of 11 mathematical unit tests passing and 7 of 17 empirical criteria failing on noisy synthetic data, mainly rapid step transitions and gradual slope ramps. It has not been evaluated on genuine patient trajectories.",
 
   // Shown next to the trend label so "Stable" is not read as an all-clear.
   stableNote: "Prototype: may miss gradual ramps.",
