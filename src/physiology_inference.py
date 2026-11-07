@@ -35,7 +35,10 @@ import pandas as pd
 from scipy.signal import butter, filtfilt, resample
 from scipy.stats import iqr
 
-from calibration import RestCalibrator
+try:
+    from .calibration import RestCalibrator
+except ImportError:
+    from calibration import RestCalibrator
 
 
 @dataclass
