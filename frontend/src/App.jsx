@@ -2,12 +2,14 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import { TABS } from "./content/tabs";
 import Overview from "./pages/Overview";
+import Multimodal from "./pages/Multimodal";
 import Physiological from "./pages/Physiological";
 import Trends from "./pages/Trends";
 
 const PAGES = {
   "/": <Overview />,
   "/physiological": <Physiological />,
+  "/multimodal": <Multimodal />,
   "/trends": <Trends />,
 };
 
