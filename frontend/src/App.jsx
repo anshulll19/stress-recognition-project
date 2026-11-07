@@ -1,33 +1,38 @@
+import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import { TABS } from "./content/tabs";
-import Overview from "./pages/Overview";
-import Facial from "./pages/Facial";
-import Multimodal from "./pages/Multimodal";
-import Physiological from "./pages/Physiological";
-import Trends from "./pages/Trends";
 
 const PAGES = {
-  "/": <Overview />,
-  "/physiological": <Physiological />,
-  "/facial": <Facial />,
-  "/multimodal": <Multimodal />,
-  "/trends": <Trends />,
+  "/": lazy(() => import("./pages/Overview")),
+  "/physiological": lazy(() => import("./pages/Physiological")),
+  "/facial": lazy(() => import("./pages/Facial")),
+  "/multimodal": lazy(() => import("./pages/Multimodal")),
+  "/trends": lazy(() => import("./pages/Trends")),
 };
 
-// Placeholder until each tab page is built.
+// Fallback for any tab that has no page yet.
 function Placeholder({ title }) {
   return <h1>{title}</h1>;
 }
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        {TABS.map(({ to, label }) => (
-          <Route key={to} path={to} element={PAGES[to] ?? <Placeholder title={label} />} />
-        ))}
-      </Route>
-    </Routes>
+    <Suspense fallback={<p>Loading…</p>}>
+      <Routes>
+        <Route element={<Layout />}>
+          {TABS.map(({ to, label }) => {
+            const Page = PAGES[to];
+            return (
+              <Route
+                key={to}
+                path={to}
+                element={Page ? <Page /> : <Placeholder title={label} />}
+              />
+            );
+          })}
+        </Route>
+      </Routes>
+    </Suspense>
   );
 }
