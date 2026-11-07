@@ -12,6 +12,7 @@ import {
 import styles from "./Multimodal.module.css";
 
 const SUBJECTS = Object.keys(data.subjects);
+const TOTAL_WINDOWS = Object.values(data.subjects).reduce((n, rows) => n + rows.length, 0);
 const pct = (v) => (v === null || v === undefined ? "—" : `${(v * 100).toFixed(1)}%`);
 const num = (v) => (v === null || v === undefined ? "—" : Number(v).toFixed(3));
 
@@ -186,8 +187,7 @@ export default function Multimodal() {
 
       <section className={styles.card}>
         <h2 className={styles.sectionTitle}>
-          Late Fusion Benchmark Across {SUBJECTS.length} Participants ({data.columns.length ? 972 : 0}{" "}
-          Windows)
+          Late Fusion Benchmark Across {SUBJECTS.length} Participants ({TOTAL_WINDOWS} Windows)
         </h2>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
