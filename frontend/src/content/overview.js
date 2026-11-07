@@ -1,6 +1,7 @@
 export const OVERVIEW = {
   title: "Multimodal Stress Monitoring Overview",
-  subtitle: "Offline benchmark evaluation and synchronized multimodal replay overview",
+  subtitle:
+    "Offline benchmark evaluation and synchronized multimodal replay overview",
 
   highlights: [
     { value: "98.2%", label: "UBFC Rest-Calib RF" },
@@ -10,10 +11,26 @@ export const OVERVIEW = {
   ],
 
   engines: [
-    { label: "Physiology Engine", value: "Active", note: "BVP (64Hz) + EDA (4Hz) Pipelines" },
-    { label: "Video Engine", value: "Active", note: "19-Feature Clean Upper-Face Model" },
-    { label: "Decision Engine", value: "Physio-First", note: "70:30 Dynamic Quality Gating" },
-    { label: "Benchmark Cohorts", value: "71 Subjects", note: "56 UBFC-Phys + 15 WESAD" },
+    {
+      label: "Physiology Engine",
+      value: "Active",
+      note: "BVP (64Hz) + EDA (4Hz) Pipelines",
+    },
+    {
+      label: "Video Engine",
+      value: "Active",
+      note: "19-Feature Clean Upper-Face Model",
+    },
+    {
+      label: "Decision Engine",
+      value: "Physio-First",
+      note: "70:30 Dynamic Quality Gating",
+    },
+    {
+      label: "Benchmark Cohorts",
+      value: "71 Subjects",
+      note: "56 UBFC-Phys + 15 WESAD",
+    },
   ],
 
   registry: [
@@ -30,12 +47,18 @@ export const OVERVIEW = {
 
   status: {
     title: "System Status & Data Input Availability",
-    subtitle: "Validation status across offline hardware and benchmark pipelines",
+    subtitle:
+      "Validation status across offline hardware and benchmark pipelines",
     badge: "Benchmark replay ready",
     intro: [
       { t: "The system operates in a " },
-      { t: "physiology-first, video-assisted multimodal configuration", b: true },
-      { t: ". All data displayed originate from verified hardware recordings across clinical benchmark datasets:" },
+      {
+        t: "physiology-first, video-assisted multimodal configuration",
+        b: true,
+      },
+      {
+        t: ". All data displayed originate from verified hardware recordings across clinical benchmark datasets:",
+      },
     ],
     bullets: [
       {
@@ -57,10 +80,26 @@ export const OVERVIEW = {
     title: "Operational Telemetry",
     subtitle: "System timestamp and stream verification",
     rows: [
-      { label: "Stream Source:", value: "Hardware Replay / Validated OOF", tone: "info" },
-      { label: "Sensor Quality Gate:", value: "ACTIVE (Zero-Std Guard)", tone: "good" },
-      { label: "Face Occlusion Gate:", value: "ACTIVE (<30% Face Triggers Fallback)", tone: "good" },
-      { label: "CLAS Integrity Guard:", value: "ENFORCED (Incompatible Physics)", tone: "warn" },
+      {
+        label: "Stream Source:",
+        value: "Hardware Replay / Validated OOF",
+        tone: "info",
+      },
+      {
+        label: "Sensor Quality Gate:",
+        value: "ACTIVE (Zero-Std Guard)",
+        tone: "good",
+      },
+      {
+        label: "Face Occlusion Gate:",
+        value: "ACTIVE (<30% Face Triggers Fallback)",
+        tone: "good",
+      },
+      {
+        label: "CLAS Integrity Guard:",
+        value: "ENFORCED (Incompatible Physics)",
+        tone: "warn",
+      },
     ],
   },
 
@@ -69,13 +108,16 @@ export const OVERVIEW = {
     parts: [
       { t: "This application " },
       { t: "never invents or fabricates predictions", b: true },
-      { t: ". All displayed physiological values, video landmarks, and trend estimates are grounded in genuine machine learning checkpoints evaluated through subject-independent cross-validation." },
+      {
+        t: ". All displayed physiological values, video landmarks, and trend estimates are grounded in genuine machine learning checkpoints evaluated through subject-independent cross-validation.",
+      },
     ],
   },
 
   trajectory: {
     title: "Recent Session Stress Probability Trajectory",
-    subtitle: "Sample multimodal session trajectory across Rest, Speech, and Math tasks",
+    subtitle:
+      "Sample multimodal session trajectory across Rest, Speech, and Math tasks",
     badge: "Subject s3",
   },
 
