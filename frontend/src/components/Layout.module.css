@@ -104,3 +104,6 @@
     align-items: stretch;
   }
 }
+.status[data-source="recording"] .statusDot {
+  background: var(--ink);
+}
