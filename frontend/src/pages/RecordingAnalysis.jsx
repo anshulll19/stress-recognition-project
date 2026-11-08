@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import {
   ApiError,
   apiConfigured,
@@ -97,7 +98,16 @@ export default function RecordingAnalysis() {
   const [results, setResults] = useState({});
   const [summary, setSummary] = useState(null);
   const [busy, setBusy] = useState("");
-  const [error, setError] = useState(null);
+   const [error, setError] = useState(null);
+  const { setSource } = useOutletContext();
+
+  // While this view is open the header must say the data is an uploaded recording.
+  // It goes back to "replay" when the view closes, including when you leave the tab.
+  useEffect(() => {
+    if (!apiConfigured) return undefined;
+    setSource("recording");
+    return () => setSource("replay");
+  }, [setSource]);
 
   if (!apiConfigured) {
     return (
