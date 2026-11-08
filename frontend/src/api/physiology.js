@@ -102,3 +102,6 @@ export function runTask(sessionId, taskId, bvpFile, edaFile, participantId) {
 
 // Cross-task summary: T1 vs T2 vs T3 with reactivity deltas.
 export const getSummary = (sessionId) => request(`/sessions/${sid(sessionId)}/summary`);
+// Fits the rest calibrator on the uploaded T1 baseline. No request body.
+export const calibrateBaseline = (sessionId) =>
+  request(`/sessions/${sid(sessionId)}/baseline/calibrate`, { method: "POST" });
