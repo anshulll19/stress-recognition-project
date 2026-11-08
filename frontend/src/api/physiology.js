@@ -70,3 +70,35 @@ export const getSessionStatus = (sessionId) => request(`/sessions/${sid(sessionI
 
 export const deleteSession = (sessionId) =>
   request(`/sessions/${sid(sessionId)}`, { method: "DELETE" });
+const SIGNAL_TASKS = ["T2", "T3"];
+
+function recordingForm(bvpFile, edaFile, participantId) {
+  const form = new FormData();
+  form.append("bvp_file", bvpFile);
+  form.append("eda_file", edaFile);
+  if (participantId) form.append("participant_id", participantId);
+  return form;
+}
+
+// Rest baseline (T1). Needs at least 180 s of continuous BVP (64 Hz) and EDA (4 Hz).
+// No Content-Type header is set on purpose: the browser adds the multipart boundary itself.
+export const uploadBaseline = (sessionId, bvpFile, edaFile, participantId) =>
+  request(`/sessions/${sid(sessionId)}/baseline`, {
+    method: "POST",
+    body: recordingForm(bvpFile, edaFile, participantId),
+  });
+
+// Stress task inference (T2 speech, T3 arithmetic). Needs at least 40 s.
+// The server returns 400 if the baseline has not been calibrated first.
+export function runTask(sessionId, taskId, bvpFile, edaFile, participantId) {
+  if (!SIGNAL_TASKS.includes(taskId)) {
+    throw new ApiError(`Unknown task "${taskId}". Use T2 or T3.`);
+  }
+  return request(`/sessions/${sid(sessionId)}/tasks/${taskId}`, {
+    method: "POST",
+    body: recordingForm(bvpFile, edaFile, participantId),
+  });
+}
+
+// Cross-task summary: T1 vs T2 vs T3 with reactivity deltas.
+export const getSummary = (sessionId) => request(`/sessions/${sid(sessionId)}/summary`);
