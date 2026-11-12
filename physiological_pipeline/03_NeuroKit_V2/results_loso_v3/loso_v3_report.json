@@ -1,0 +1,74 @@
+{
+    "experiment": "NeuroKit2 V2 LOSO Rest vs Distress V3",
+    "calibration_end_seconds": 85.0,
+    "boundary_exclusion": [
+        85.0,
+        100.0
+    ],
+    "rest_test_start_seconds": 100.0,
+    "window_duration_seconds": 30.0,
+    "participants_evaluated": 56,
+    "models": [
+        "RandomForest",
+        "RBF_SVM",
+        "ExtraTrees"
+    ],
+    "mean_metrics": {
+        "ExtraTrees": {
+            "accuracy": 0.8529843444227005,
+            "balanced_accuracy": 0.6764243820695434,
+            "precision": 0.9057799176123774,
+            "recall": 0.929147465437788,
+            "macro_f1": 0.6624541557979553,
+            "weighted_f1": 0.8305806509281262
+        },
+        "RBF_SVM": {
+            "accuracy": 0.8155577299412916,
+            "balanced_accuracy": 0.7859237536656892,
+            "precision": 0.9485330762989503,
+            "recall": 0.8283410138248849,
+            "macro_f1": 0.7202950602701849,
+            "weighted_f1": 0.8162796649482722
+        },
+        "RandomForest": {
+            "accuracy": 0.8551859099804304,
+            "balanced_accuracy": 0.7277963971512359,
+            "precision": 0.9054377049850215,
+            "recall": 0.9101382488479263,
+            "macro_f1": 0.7007522672773464,
+            "weighted_f1": 0.8399798423948691
+        }
+    },
+    "pooled_metrics": [
+        {
+            "model": "RandomForest",
+            "accuracy": 0.8551859099804305,
+            "balanced_accuracy": 0.7277963971512358,
+            "precision": 0.9186046511627907,
+            "recall": 0.9101382488479263,
+            "macro_f1": 0.7229987107360525,
+            "weighted_f1": 0.8566837819265425,
+            "total_windows": 4088
+        },
+        {
+            "model": "RBF_SVM",
+            "accuracy": 0.8155577299412916,
+            "balanced_accuracy": 0.7859237536656891,
+            "precision": 0.9479235332893869,
+            "recall": 0.8283410138248848,
+            "macro_f1": 0.7163049860929847,
+            "weighted_f1": 0.833536514807114,
+            "total_windows": 4088
+        },
+        {
+            "model": "ExtraTrees",
+            "accuracy": 0.8529843444227005,
+            "balanced_accuracy": 0.6764243820695434,
+            "precision": 0.9008656799776599,
+            "recall": 0.929147465437788,
+            "macro_f1": 0.6898071957153313,
+            "weighted_f1": 0.8469855892088377,
+            "total_windows": 4088
+        }
+    ]
+}
