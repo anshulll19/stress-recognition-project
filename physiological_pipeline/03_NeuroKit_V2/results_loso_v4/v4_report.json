@@ -1,0 +1,122 @@
+{
+    "experiment": "NeuroKit2 V4 Modality Ablation",
+    "protocol": {
+        "calibration_end": 85.0,
+        "boundary_exclusion": [
+            85,
+            100
+        ],
+        "rest_test_start": 100.0,
+        "distress_tasks": [
+            2,
+            3
+        ],
+        "evaluation": "LOSO"
+    },
+    "participants_evaluated": 56,
+    "summary": "                             accuracy           balanced_accuracy           precision              recall            macro_f1           weighted_f1          \n                                 mean       std              mean       std      mean       std      mean       std      mean       std        mean       std\nmodality       model                                                                                                                                         \nBVP_EDA_fusion RBF_SVM       0.815558  0.214345          0.785924  0.218005  0.948533  0.099880  0.828341  0.252664  0.720295  0.245725    0.816280  0.208973\n               RandomForest  0.855186  0.173607          0.727796  0.232842  0.905438  0.143787  0.910138  0.197344  0.700752  0.258584    0.839980  0.173508\nBVP_only       RBF_SVM       0.749022  0.214411          0.749424  0.192989  0.931721  0.147538  0.748848  0.261214  0.656914  0.224051    0.759755  0.212423\n               RandomForest  0.849804  0.092907          0.676555  0.189475  0.906910  0.063253  0.924539  0.107478  0.656944  0.190569    0.833897  0.091829\nEDA_only       RBF_SVM       0.811888  0.231687          0.779090  0.237714  0.922819  0.191085  0.826037  0.270743  0.711415  0.273726    0.808534  0.232493\n               RandomForest  0.844912  0.178170          0.709062  0.232696  0.914548  0.083421  0.903514  0.200309  0.684392  0.242522    0.830759  0.169852",
+    "pooled": [
+        {
+            "modality": "BVP_EDA_fusion",
+            "model": "RBF_SVM",
+            "accuracy": 0.8155577299412916,
+            "balanced_accuracy": 0.7859237536656891,
+            "precision": 0.9479235332893869,
+            "recall": 0.8283410138248848,
+            "macro_f1": 0.7163049860929847,
+            "weighted_f1": 0.833536514807114,
+            "TN": 458,
+            "FP": 158,
+            "FN": 596,
+            "TP": 2876,
+            "total_windows": 4088,
+            "rest_specificity": 0.7435064935064936,
+            "distress_sensitivity": 0.8283410138248848
+        },
+        {
+            "modality": "BVP_EDA_fusion",
+            "model": "RandomForest",
+            "accuracy": 0.8551859099804305,
+            "balanced_accuracy": 0.7277963971512358,
+            "precision": 0.9186046511627907,
+            "recall": 0.9101382488479263,
+            "macro_f1": 0.7229987107360525,
+            "weighted_f1": 0.8566837819265425,
+            "TN": 336,
+            "FP": 280,
+            "FN": 312,
+            "TP": 3160,
+            "total_windows": 4088,
+            "rest_specificity": 0.5454545454545454,
+            "distress_sensitivity": 0.9101382488479263
+        },
+        {
+            "modality": "BVP_only",
+            "model": "RBF_SVM",
+            "accuracy": 0.7490215264187867,
+            "balanced_accuracy": 0.7494239631336406,
+            "precision": 0.944081336238199,
+            "recall": 0.7488479262672811,
+            "macro_f1": 0.6545266747386889,
+            "weighted_f1": 0.780755531800597,
+            "TN": 462,
+            "FP": 154,
+            "FN": 872,
+            "TP": 2600,
+            "total_windows": 4088,
+            "rest_specificity": 0.75,
+            "distress_sensitivity": 0.7488479262672811
+        },
+        {
+            "modality": "BVP_only",
+            "model": "RandomForest",
+            "accuracy": 0.8498043052837574,
+            "balanced_accuracy": 0.6765552995391705,
+            "precision": 0.9011791128579449,
+            "recall": 0.9245391705069125,
+            "macro_f1": 0.6875282279167436,
+            "weighted_f1": 0.844846787645254,
+            "TN": 264,
+            "FP": 352,
+            "FN": 262,
+            "TP": 3210,
+            "total_windows": 4088,
+            "rest_specificity": 0.42857142857142855,
+            "distress_sensitivity": 0.9245391705069125
+        },
+        {
+            "modality": "EDA_only",
+            "model": "RBF_SVM",
+            "accuracy": 0.8118884540117417,
+            "balanced_accuracy": 0.779089861751152,
+            "precision": 0.9455984174085065,
+            "recall": 0.826036866359447,
+            "macro_f1": 0.7107898863416302,
+            "weighted_f1": 0.8302509989878191,
+            "TN": 451,
+            "FP": 165,
+            "FN": 604,
+            "TP": 2868,
+            "total_windows": 4088,
+            "rest_specificity": 0.7321428571428571,
+            "distress_sensitivity": 0.826036866359447
+        },
+        {
+            "modality": "EDA_only",
+            "model": "RandomForest",
+            "accuracy": 0.8449119373776908,
+            "balanced_accuracy": 0.7090621072475911,
+            "precision": 0.9129802095459837,
+            "recall": 0.9035138248847926,
+            "macro_f1": 0.704111175448755,
+            "weighted_f1": 0.8467093939129537,
+            "TN": 317,
+            "FP": 299,
+            "FN": 335,
+            "TP": 3137,
+            "total_windows": 4088,
+            "rest_specificity": 0.5146103896103896,
+            "distress_sensitivity": 0.9035138248847926
+        }
+    ]
+}
