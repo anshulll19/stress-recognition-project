@@ -41,24 +41,25 @@ class PhysiologicalFeatures(BaseModel):
 
 
 class WindowResult(BaseModel):
-    """
-    Inference result and signal quality evaluation for a single 30s sliding window.
-    Crucial: Unreliable or dropout windows have prediction=None and probability=None,
-    guaranteeing they are never treated as non-stress (0).
-    """
-    window_index: int = Field(..., description="Zero-indexed window sequence number")
-    start_s: float = Field(..., description="Window start offset in seconds from recording onset")
-    end_s: float = Field(..., description="Window end offset in seconds from recording onset")
-    is_reliable: bool = Field(..., description="True if sensor contact was valid and variance was non-zero")
-    prediction: Optional[int] = Field(None, description="0=non-stress, 1=stress, None=unreliable/dropout")
-    probability: Optional[float] = Field(None, ge=0.0, le=1.0, description="P(stress) in [0.0, 1.0], None if unreliable")
-    confidence: Optional[float] = Field(None, ge=0.0, le=1.0, description="Model confidence max(P, 1-P), None if unreliable")
-    class_name: str = Field(..., description="'stress', 'non-stress', or 'unreliable'")
-    quality_flag: str = Field(..., description="Signal quality status: 'OK', 'DROPOUT', or 'UNRELIABLE'")
-    quality_reason: Optional[str] = Field(None, description="Detailed explanation of sensor or extraction failure")
-    latency_ms: float = Field(..., ge=0.0, description="Inference latency for this window in milliseconds")
-    is_calibrated: bool = Field(..., description="Whether participant rest calibration was applied")
-    features: Optional[PhysiologicalFeatures] = Field(None, description="Extracted 12 features for this window")
+    """V5 EDA-only inference result. Quality scope is recording-level, not per-window."""
+    window_index: int
+    start_s: float
+    end_s: float
+    is_reliable: bool = Field(..., description="Window accepted by inference; not independent sensor-quality validation")
+    prediction: Optional[int] = Field(None, description="0=rest, 1=distress; None if inference abstained")
+    probability: Optional[float] = None
+    confidence: Optional[float] = None
+    class_name: str
+    quality_flag: str
+    quality_reason: Optional[str] = None
+    latency_ms: float = 0.0
+    is_calibrated: bool = True
+    features: Optional[PhysiologicalFeatures] = None
+    decision_score: Optional[float] = Field(None, description="Raw SVM decision_function score; not a probability")
+    score_type: Optional[str] = "raw_svm_decision_function"
+    baseline_calibrated: bool = True
+    probability_calibrated: bool = False
+    quality_scope: str = "recording_level_only"
 
 
 # ============================================================================
@@ -69,12 +70,22 @@ class SessionCreateRequest(BaseModel):
     """Request payload to initialize an in-memory physiological analysis session."""
     participant_id: str = Field(..., min_length=1, max_length=64, description="Unique participant or subject identifier (e.g. 'P01', 'sub-14')")
     notes: Optional[str] = Field(None, max_length=500, description="Optional metadata or experiment notes")
+    model_version: str = Field("v5", description="Inference model: v5 (EDA-only) or v3 (BVP+EDA)")
+
+    @field_validator("model_version")
+    @classmethod
+    def validate_model_version(cls, value: str) -> str:
+        value = value.strip().lower()
+        if value not in {"v3", "v5"}:
+            raise ValueError("model_version must be 'v3' or 'v5'")
+        return value
 
 
 class SessionResponse(BaseModel):
     """Session representation returned on creation or retrieval."""
     session_id: str = Field(..., description="Unique UUID identifying the session")
     participant_id: str = Field(..., description="Associated participant identifier")
+    model_version: str = Field("v5", description="Selected inference model version")
     status: str = Field(..., description="Session state: 'created', 'baseline_uploaded', 'calibrated', 'completed'")
     is_calibrated: bool = Field(..., description="Whether T1 resting baseline calibration has been computed")
     created_at: datetime = Field(..., description="ISO 8601 session creation timestamp")
@@ -106,15 +117,20 @@ class SessionDeleteResponse(BaseModel):
 # ============================================================================
 
 class BaselineUploadJSONRequest(BaseModel):
-    """
-    JSON request body for uploading T1 baseline signals when not using multipart file upload.
-    Original UBFC Research Protocol: 180 seconds of resting baseline.
-    BVP nominal rate: 64 Hz (11,520 samples). EDA nominal rate: 4 Hz (720 samples).
-    """
-    participant_id: str = Field(..., description="Must match the session participant identifier")
-    bvp_samples: List[float] = Field(..., min_length=11520, description="Raw BVP samples (180s @ 64 Hz = 11,520 samples)")
-    eda_samples: List[float] = Field(..., min_length=720, description="Raw EDA samples (180s @ 4 Hz = 720 samples)")
-    task_id: str = Field("T1", description="Baseline task identifier, must be 'T1'")
+    """JSON request for T1 baseline physiological signals."""
+
+    participant_id: str = Field(
+        ..., description="Must match the session participant identifier"
+    )
+    bvp_samples: List[float] = Field(
+        ..., min_length=1, description="Raw BVP samples"
+    )
+    eda_samples: List[float] = Field(
+        ..., min_length=1, description="Raw EDA samples"
+    )
+    bvp_fs: float = Field(64.0, gt=0, allow_inf_nan=False)
+    eda_fs: float = Field(4.0, gt=0, allow_inf_nan=False)
+    task_id: str = Field("T1")
 
     @field_validator("task_id")
     @classmethod
@@ -122,7 +138,6 @@ class BaselineUploadJSONRequest(BaseModel):
         if v.upper() != "T1":
             raise ValueError(f"Baseline upload must specify task_id='T1', got '{v}'")
         return v.upper()
-
 
 class BaselineUploadResponse(BaseModel):
     """Response returned upon successful ingestion of T1 baseline signals."""
@@ -139,19 +154,35 @@ class BaselineUploadResponse(BaseModel):
 
 
 class CalibrationResponse(BaseModel):
-    """Response returned upon successful execution of resting baseline calibration."""
-    session_id: str = Field(..., description="Session identifier")
-    participant_id: str = Field(..., description="Participant identifier")
-    is_calibrated: bool = Field(True, description="Always true upon successful calibration")
-    n_total_windows: int = Field(..., description="Total 30s windows sliced from T1 (expected 31 windows for 180s)")
-    n_reliable_windows: int = Field(..., description="Count of reliable baseline windows used for calibration (>= 25)")
-    n_unreliable_windows: int = Field(..., description="Count of rejected dropout/unreliable baseline windows")
-    baseline_duration_s: float = Field(..., description="Baseline recording duration in seconds")
-    feature_means: Dict[str, float] = Field(..., description="Resting baseline feature means (mu_rest)")
-    feature_stds: Dict[str, float] = Field(..., description="Resting baseline feature standard deviations (sigma_rest)")
-    baseline_stress_percentage: float = Field(..., description="Stress percentage observed during resting baseline (expected near 0%)")
-    mean_baseline_probability: Optional[float] = Field(None, description="Average P(stress) during baseline")
-    message: str = Field(..., description="Guidance for proceeding with T2/T3 stress inference")
+    """V5 EDA-only participant baseline calibration response."""
+
+    session_id: str
+    participant_id: str
+    is_calibrated: bool = False
+
+    status: str = "not_calibrated"
+    abstained: bool = False
+    warnings: List[str] = Field(default_factory=list)
+    diagnostics: Dict[str, Any] = Field(default_factory=dict)
+
+    calibration_windows: int = 0
+    calibration_duration_s: float = 0.0
+    feature_count: int = 19
+
+    calibration_method: str = "participant-specific median/IQR"
+    probability_calibrated: bool = False
+
+    # Retained as optional legacy fields for frontend compatibility.
+    n_total_windows: Optional[int] = None
+    n_reliable_windows: Optional[int] = None
+    n_unreliable_windows: Optional[int] = None
+    baseline_duration_s: Optional[float] = None
+    feature_means: Optional[Dict[str, float]] = None
+    feature_stds: Optional[Dict[str, float]] = None
+    baseline_stress_percentage: Optional[float] = None
+    mean_baseline_probability: Optional[float] = None
+
+    message: str
 
 
 # ============================================================================
@@ -159,43 +190,53 @@ class CalibrationResponse(BaseModel):
 # ============================================================================
 
 class TaskInferenceJSONRequest(BaseModel):
-    """
-    JSON request body for executing stress inference on active tasks (T2 or T3).
-    Minimum duration: 40 seconds (2,560 BVP samples @ 64 Hz, 160 EDA samples @ 4 Hz).
-    """
-    participant_id: str = Field(..., description="Must match the session participant identifier")
-    bvp_samples: List[float] = Field(..., min_length=2560, description="Raw BVP samples (minimum 40s @ 64 Hz = 2,560 samples)")
-    eda_samples: List[float] = Field(..., min_length=160, description="Raw EDA samples (minimum 40s @ 4 Hz = 160 samples)")
+    """JSON request for T2/T3 physiological inference."""
 
+    participant_id: str = Field(
+        ..., description="Must match the session participant identifier"
+    )
+    bvp_samples: List[float] = Field(..., min_length=1)
+    eda_samples: List[float] = Field(..., min_length=1)
+    bvp_fs: float = Field(64.0, gt=0, allow_inf_nan=False)
+    eda_fs: float = Field(4.0, gt=0, allow_inf_nan=False)
 
 class TaskSummaryMetrics(BaseModel):
-    """Summary metrics aggregating predictions across all sliding windows in a task."""
-    task_id: str = Field(..., description="'T1', 'T2', or 'T3'")
-    task_name: str = Field(..., description="Descriptive task label")
-    participant_id: str = Field(..., description="Participant identifier")
-    total_windows: int = Field(..., description="Total 30s windows evaluated")
-    reliable_windows: int = Field(..., description="Windows with valid sensor contact")
-    unreliable_windows: int = Field(..., description="Windows with dropout or sensor artifacts")
-    stress_windows: int = Field(..., description="Reliable windows classified as stress (prediction=1)")
-    non_stress_windows: int = Field(..., description="Reliable windows classified as non-stress (prediction=0)")
-    stress_percentage: float = Field(..., ge=0.0, le=100.0, description="Percentage of reliable windows classified as stress")
-    mean_stress_probability: Optional[float] = Field(None, description="Average P(stress) over reliable windows")
-    peak_stress_probability: Optional[float] = Field(None, description="Maximum P(stress) over reliable windows")
-    min_stress_probability: Optional[float] = Field(None, description="Minimum P(stress) over reliable windows")
-    mean_confidence: Optional[float] = Field(None, description="Average model confidence over reliable windows")
-    mean_latency_ms: float = Field(..., description="Average inference latency per window in milliseconds")
-    total_latency_ms: float = Field(..., description="Total inference latency across all windows in milliseconds")
-    dominant_state: str = Field(..., description="'stress', 'non-stress', or 'inconclusive'")
-    is_calibrated: bool = Field(True, description="Whether T1 participant calibration was applied")
+    """Task summary. Stress percentage is the fraction of accepted windows labelled distress."""
+    task_id: str
+    task_name: str
+    participant_id: str
+    total_windows: int = 0
+    reliable_windows: int = 0
+    unreliable_windows: int = 0
+    stress_windows: int = 0
+    non_stress_windows: int = 0
+    stress_percentage: Optional[float] = None
+    mean_stress_probability: Optional[float] = None
+    peak_stress_probability: Optional[float] = None
+    min_stress_probability: Optional[float] = None
+    mean_confidence: Optional[float] = None
+    mean_latency_ms: float = 0.0
+    total_latency_ms: float = 0.0
+    dominant_state: str = "inconclusive"
+    is_calibrated: bool = True
+    mean_decision_score: Optional[float] = None
+    min_decision_score: Optional[float] = None
+    max_decision_score: Optional[float] = None
+    score_type: str = "raw_svm_decision_function"
+    probability_calibrated: bool = False
 
 
 class TaskInferenceResponse(BaseModel):
-    """Complete inference response for an executed task, including summary and window timeline."""
-    session_id: str = Field(..., description="Session identifier")
-    participant_id: str = Field(..., description="Participant identifier")
-    task_id: str = Field(..., description="'T2' or 'T3'")
-    summary: TaskSummaryMetrics = Field(..., description="Aggregated task-level metrics")
-    windows: List[WindowResult] = Field(..., description="Per-window timeline with timestamps and quality flags")
+    """V5 task inference response, including abstention and diagnostics."""
+    session_id: str
+    participant_id: str
+    task_id: str
+    summary: TaskSummaryMetrics
+    windows: List[WindowResult]
+    status: str = "accepted"
+    abstained: bool = False
+    warnings: List[str] = Field(default_factory=list)
+    diagnostics: Dict[str, Any] = Field(default_factory=dict)
 
 
 # ============================================================================

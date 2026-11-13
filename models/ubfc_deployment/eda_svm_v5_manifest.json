@@ -1,0 +1,62 @@
+{
+  "model_name": "UBFC Phys V5 EDA-only RBF-SVM",
+  "created_utc": "2026-11-12T07:54:18.685896+00:00",
+  "dataset": "results/neurokit2_v2/fused_features_v2.csv",
+  "participants": 56,
+  "dataset_windows": 5208,
+  "training_windows": 4144,
+  "rest_training_windows": 672,
+  "distress_training_windows": 3472,
+  "feature_count": 19,
+  "features": [
+    "eda_mean",
+    "eda_std",
+    "eda_median",
+    "eda_iqr",
+    "eda_range",
+    "eda_tonic_mean",
+    "eda_tonic_std",
+    "eda_tonic_slope",
+    "eda_phasic_mean",
+    "eda_phasic_std",
+    "eda_scr_valid_event_count",
+    "eda_scr_onsets_diagnostic",
+    "eda_scr_peaks_diagnostic",
+    "eda_raw_std",
+    "eda_unique_fraction",
+    "eda_flat_step_fraction",
+    "eda_median_abs_difference",
+    "eda_max_abs_jump",
+    "eda_jump_ratio"
+  ],
+  "classifier": {
+    "type": "sklearn.svm.SVC",
+    "kernel": "rbf",
+    "C": 1.0,
+    "gamma": "scale",
+    "class_weight": "balanced",
+    "random_state": 42
+  },
+  "pipeline": [
+    "SimpleImputer(strategy=median)",
+    "StandardScaler",
+    "RBF-SVM"
+  ],
+  "calibration": {
+    "modality": "EDA",
+    "task": 1,
+    "window_end_max_seconds": 85.0,
+    "statistics": [
+      "median",
+      "IQR"
+    ],
+    "fallback": "standard deviation, then 1.0",
+    "participant_specific": true
+  },
+  "label_mapping": {
+    "0": "rest",
+    "1": "distress"
+  },
+  "training_protocol": "All participants' own T1 calibration windows and T2/T3 distress windows",
+  "evaluation_note": "Final model fitted on all 56 participants. Training metrics are not independent validation. V5 LOSO results are reported separately."
+}
