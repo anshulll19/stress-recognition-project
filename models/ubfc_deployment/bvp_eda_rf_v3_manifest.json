@@ -1,0 +1,41 @@
+{
+  "model_name": "BVP_EDA_RandomForest_V3",
+  "dataset": "UBFC-Phys",
+  "model_file": "models/ubfc_deployment/ubfc_phys_bvp_eda_rf_v3.joblib",
+  "feature_count": 22,
+  "features": [
+    "bvp_mean",
+    "bvp_std",
+    "bvp_median",
+    "bvp_iqr",
+    "bvp_slope_per_sample",
+    "bvp_range",
+    "bvp_peak_count",
+    "bvp_heart_rate_mean",
+    "bvp_heart_rate_std",
+    "bvp_ibi_mean",
+    "bvp_ibi_std",
+    "bvp_peak_quality",
+    "eda_mean",
+    "eda_std",
+    "eda_median",
+    "eda_iqr",
+    "eda_range",
+    "eda_tonic_mean",
+    "eda_tonic_std",
+    "eda_tonic_slope",
+    "eda_phasic_mean",
+    "eda_phasic_std"
+  ],
+  "n_participants": 56,
+  "calibration_end_seconds": 85,
+  "rest_training_start_seconds": 100,
+  "normalization": "participant T1 baseline mean/std",
+  "training_windows": 5208,
+  "training_class_counts": {
+    "0": 1736,
+    "1": 3472
+  },
+  "loso_evaluation": "results/neurokit2_v3_full_loso/summary.json",
+  "metrics_warning": "LOSO metrics are held-out participant evaluation results. The final artifact was refit on all participants."
+}

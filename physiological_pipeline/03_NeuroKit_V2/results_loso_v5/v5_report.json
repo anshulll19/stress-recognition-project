@@ -1,0 +1,181 @@
+{
+    "experiment": "NeuroKit2 V5 Personalized Calibration",
+    "normalization": "Per-participant T1 median/IQR",
+    "calibration_end_seconds": 85.0,
+    "boundary_exclusion": [
+        85,
+        100
+    ],
+    "rest_test_start_seconds": 100.0,
+    "distress_tasks": [
+        2,
+        3
+    ],
+    "participants_evaluated": 56,
+    "mean_metrics": {
+        "('BVP_EDA_fusion', 'RBF_SVM')": {
+            "accuracy": 0.9104696673189824,
+            "balanced_accuracy": 0.8938782991202345,
+            "precision": 0.9600817221836816,
+            "recall": 0.9176267281105991,
+            "macro_f1": 0.869950750132442,
+            "weighted_f1": 0.911317494950907,
+            "rest_specificity": 0.8701298701298701,
+            "distress_sensitivity": 0.9176267281105991
+        },
+        "('BVP_EDA_fusion', 'RandomForest')": {
+            "accuracy": 0.8718199608610567,
+            "balanced_accuracy": 0.6180744658567239,
+            "precision": 0.886666953982228,
+            "recall": 0.981278801843318,
+            "macro_f1": 0.5892523789139734,
+            "weighted_f1": 0.8256612902014352,
+            "rest_specificity": 0.25487012987012986,
+            "distress_sensitivity": 0.981278801843318
+        },
+        "('BVP_only', 'RBF_SVM')": {
+            "accuracy": 0.7979452054794521,
+            "balanced_accuracy": 0.7655399036447423,
+            "precision": 0.9014684414373875,
+            "recall": 0.8119239631336406,
+            "macro_f1": 0.7037276359583274,
+            "weighted_f1": 0.7987624645425095,
+            "rest_specificity": 0.7191558441558442,
+            "distress_sensitivity": 0.8119239631336406
+        },
+        "('BVP_only', 'RandomForest')": {
+            "accuracy": 0.8571428571428571,
+            "balanced_accuracy": 0.6421501885211562,
+            "precision": 0.893162126087173,
+            "recall": 0.9498847926267281,
+            "macro_f1": 0.6343395690921457,
+            "weighted_f1": 0.830823646224439,
+            "rest_specificity": 0.3344155844155844,
+            "distress_sensitivity": 0.9498847926267281
+        },
+        "('EDA_only', 'RBF_SVM')": {
+            "accuracy": 0.8852739726027397,
+            "balanced_accuracy": 0.9050848345203184,
+            "precision": 0.935205997310694,
+            "recall": 0.8767281105990783,
+            "macro_f1": 0.8602528887758815,
+            "weighted_f1": 0.8811858811936616,
+            "rest_specificity": 0.9334415584415584,
+            "distress_sensitivity": 0.8767281105990783
+        },
+        "('EDA_only', 'RandomForest')": {
+            "accuracy": 0.849559686888454,
+            "balanced_accuracy": 0.5916160452450775,
+            "precision": 0.8613997538513777,
+            "recall": 0.9608294930875576,
+            "macro_f1": 0.5611295684373592,
+            "weighted_f1": 0.8015329414643224,
+            "rest_specificity": 0.2224025974025974,
+            "distress_sensitivity": 0.9608294930875576
+        }
+    },
+    "pooled_metrics": [
+        {
+            "modality": "BVP_EDA_fusion",
+            "model": "RBF_SVM",
+            "accuracy": 0.9104696673189824,
+            "balanced_accuracy": 0.8938782991202345,
+            "precision": 0.9755052051439069,
+            "recall": 0.9176267281105991,
+            "macro_f1": 0.845580522071691,
+            "weighted_f1": 0.9155138801193379,
+            "TN": 536,
+            "FP": 80,
+            "FN": 286,
+            "TP": 3186,
+            "rest_specificity": 0.8701298701298701,
+            "distress_sensitivity": 0.9176267281105991,
+            "total_windows": 4088
+        },
+        {
+            "modality": "BVP_EDA_fusion",
+            "model": "RandomForest",
+            "accuracy": 0.8718199608610567,
+            "balanced_accuracy": 0.6180744658567239,
+            "precision": 0.8812726332126228,
+            "recall": 0.981278801843318,
+            "macro_f1": 0.6516462836732451,
+            "weighted_f1": 0.8451281366112113,
+            "TN": 157,
+            "FP": 459,
+            "FN": 65,
+            "TP": 3407,
+            "rest_specificity": 0.25487012987012986,
+            "distress_sensitivity": 0.981278801843318,
+            "total_windows": 4088
+        },
+        {
+            "modality": "BVP_only",
+            "model": "RBF_SVM",
+            "accuracy": 0.797945205479452,
+            "balanced_accuracy": 0.7655399036447423,
+            "precision": 0.9421791443850267,
+            "recall": 0.8119239631336406,
+            "macro_f1": 0.6948693555103174,
+            "weighted_f1": 0.8187686095136206,
+            "TN": 443,
+            "FP": 173,
+            "FN": 653,
+            "TP": 2819,
+            "rest_specificity": 0.7191558441558441,
+            "distress_sensitivity": 0.8119239631336406,
+            "total_windows": 4088
+        },
+        {
+            "modality": "BVP_only",
+            "model": "RandomForest",
+            "accuracy": 0.8571428571428571,
+            "balanced_accuracy": 0.6421501885211562,
+            "precision": 0.8894282632146709,
+            "recall": 0.9498847926267281,
+            "macro_f1": 0.6661587855600676,
+            "weighted_f1": 0.8425658064010918,
+            "TN": 206,
+            "FP": 410,
+            "FN": 174,
+            "TP": 3298,
+            "rest_specificity": 0.3344155844155844,
+            "distress_sensitivity": 0.9498847926267281,
+            "total_windows": 4088
+        },
+        {
+            "modality": "EDA_only",
+            "model": "RBF_SVM",
+            "accuracy": 0.8852739726027398,
+            "balanced_accuracy": 0.9050848345203184,
+            "precision": 0.986709886547812,
+            "recall": 0.8767281105990783,
+            "macro_f1": 0.8193941982423718,
+            "weighted_f1": 0.8956002069800028,
+            "TN": 575,
+            "FP": 41,
+            "FN": 428,
+            "TP": 3044,
+            "rest_specificity": 0.9334415584415584,
+            "distress_sensitivity": 0.8767281105990783,
+            "total_windows": 4088
+        },
+        {
+            "modality": "EDA_only",
+            "model": "RandomForest",
+            "accuracy": 0.849559686888454,
+            "balanced_accuracy": 0.5916160452450775,
+            "precision": 0.8744429882044561,
+            "recall": 0.9608294930875576,
+            "macro_f1": 0.6119073012127086,
+            "weighted_f1": 0.8240783588838336,
+            "TN": 137,
+            "FP": 479,
+            "FN": 136,
+            "TP": 3336,
+            "rest_specificity": 0.2224025974025974,
+            "distress_sensitivity": 0.9608294930875576,
+            "total_windows": 4088
+        }
+    ]
+}

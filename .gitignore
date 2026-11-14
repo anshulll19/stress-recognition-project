@@ -1,3 +1,5 @@
+venv_sklearn161/
+
 # Data — never commit raw datasets (size + license terms)
 data/
 *.pkl
