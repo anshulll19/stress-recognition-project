@@ -16,10 +16,26 @@ const TASKS = [
   { id: "T3", name: "Mental arithmetic task" },
 ];
 
-const CLASS_LABEL = { stress: "Stress", "non-stress": "Non-stress", unreliable: "Unreliable" };
-const CLASS_TONE = { stress: "high", "non-stress": "good", unreliable: "warn" };
+// The v5 model reports "rest" and "distress". The older labels are kept so other model versions still render.
+const CLASS_LABEL = {
+  distress: "Distress",
+  rest: "Rest",
+  inconclusive: "Inconclusive",
+  stress: "Stress",
+  "non-stress": "Non-stress",
+  unreliable: "Unreliable",
+};
+const CLASS_TONE = {
+  distress: "high",
+  rest: "good",
+  inconclusive: "warn",
+  stress: "high",
+  "non-stress": "good",
+  unreliable: "warn",
+};
+const isDistress = (state) => state === "distress" || state === "stress";
 
-const prob = (v) => (v == null ? "—" : `${(v * 100).toFixed(1)}%`);
+const score = (v) => (v == null ? "—" : Number(v).toFixed(2));
 const percent = (v) => (v == null ? "—" : `${Number(v).toFixed(1)}%`);
 const words = (s) => (s ? String(s).replace(/_/g, " ").toLowerCase() : "—");
 
@@ -30,6 +46,17 @@ function Stat({ label, value, note, tone }) {
       <p className={styles.statValue} data-tone={tone}>{value}</p>
       {note && <p className={styles.hint}>{note}</p>}
     </div>
+  );
+}
+
+function Warnings({ items }) {
+  if (!items || items.length === 0) return null;
+  return (
+    <ul className={styles.hint}>
+      {items.map((w, i) => (
+        <li key={i}>{typeof w === "string" ? w : JSON.stringify(w)}</li>
+      ))}
+    </ul>
   );
 }
 
@@ -62,30 +89,34 @@ function FilePair({ disabled, onBvp, onEda }) {
 
 function WindowTable({ windows }) {
   return (
-    <div className={styles.scroll} role="region" aria-label="Per-window results" tabIndex={0}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th scope="col">Window</th>
-            <th scope="col">Result</th>
-            <th scope="col">P(stress)</th>
-            <th scope="col">Signal quality</th>
-          </tr>
-        </thead>
-        <tbody>
-          {windows.map((w) => (
-            <tr key={w.window_index}>
-              <td>{w.start_s}–{w.end_s}s</td>
-              <td data-tone={CLASS_TONE[w.class_name]}>
-                {CLASS_LABEL[w.class_name] ?? w.class_name}
-              </td>
-              <td>{prob(w.probability)}</td>
-              <td>{w.is_reliable ? "OK" : w.quality_reason || w.quality_flag}</td>
+    <>
+      <div className={styles.scroll} role="region" aria-label="Per-window results" tabIndex={0}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th scope="col">Window</th>
+              <th scope="col">Result</th>
+              <th scope="col">Decision score</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {windows.map((w) => (
+              <tr key={w.window_index}>
+                <td>{w.start_s}–{w.end_s}s</td>
+                <td data-tone={CLASS_TONE[w.class_name]}>
+                  {CLASS_LABEL[w.class_name] ?? w.class_name}
+                </td>
+                <td>{score(w.decision_score)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className={styles.hint}>
+        The decision score is the raw output of the model, not a probability. Scores above 0 lean
+        towards distress and scores below 0 towards rest.
+      </p>
+    </>
   );
 }
 
@@ -98,7 +129,7 @@ export default function RecordingAnalysis() {
   const [results, setResults] = useState({});
   const [summary, setSummary] = useState(null);
   const [busy, setBusy] = useState("");
-   const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const { setSource } = useOutletContext();
 
   // While this view is open the header must say the data is an uploaded recording.
@@ -168,15 +199,17 @@ export default function RecordingAnalysis() {
     });
 
   const working = busy !== "";
-  const anyTask = TASKS.some((t) => results[t.id]);
-  const profile = summary?.reactivity_profile;
+  const calibrated = Boolean(calibration) && !calibration.abstained;
+  const anyTask = TASKS.some((t) => results[t.id] && !results[t.id].abstained);
+  const taskSummaries = summary?.tasks ? Object.values(summary.tasks) : [];
 
   return (
     <div className={styles.root} key={round}>
       <p className={styles.banner}>
-        Uploaded recording, analysed by the physiology API. This uses a rest-calibrated model on
-        30-second windows, which is different from the replay views. Research output, not a
-        clinical diagnostic instrument.
+        Uploaded recording, analysed by the physiology API. This uses the v5 model, which reads the
+        EDA signal only: the BVP file is accepted but not used for the result. It is calibrated to
+        the rest baseline and works on 30-second windows, which is different from the replay
+        views. Research output, not a clinical diagnostic instrument.
       </p>
 
       {error && (
@@ -233,10 +266,11 @@ export default function RecordingAnalysis() {
       <section className={styles.step} aria-labelledby="rec-2">
         <div className={styles.stepHead}>
           <h2 id="rec-2" className={styles.stepTitle}>2. Rest baseline (T1)</h2>
-          {calibration && <span className={styles.done}>Calibrated</span>}
+          {calibrated && <span className={styles.done}>Calibrated</span>}
         </div>
         <p className={styles.hint}>
-          At least 180 seconds of continuous rest. BVP at 64 Hz and EDA at 4 Hz, as two files.
+          At least 180 seconds of continuous rest. BVP at 64 Hz and EDA at 4 Hz, as two files. The
+          model calibrates on the first 85 seconds of the EDA signal.
         </p>
         <FilePair
           disabled={!session || working}
@@ -253,35 +287,52 @@ export default function RecordingAnalysis() {
             {busy === "baseline" ? "Uploading…" : "Upload and calibrate"}
           </button>
         </div>
-        {calibration && (
-          <div className={styles.stats}>
-            <Stat
-              label="Reliable baseline windows"
-              value={`${calibration.n_reliable_windows} of ${calibration.n_total_windows}`}
-              note={`${calibration.n_unreliable_windows} unreliable windows were left out`}
-            />
-            <Stat
-              label="Mean baseline P(stress)"
-              value={prob(calibration.mean_baseline_probability)}
-              note="These windows were used to calibrate the model, so a low value here is expected and does not measure accuracy."
-            />
+        {calibration?.abstained && (
+          <div className={styles.error} role="status">
+            <span>
+              The baseline could not be used ({words(calibration.status)}). Check that the EDA
+              signal is clean and long enough, then upload the baseline again.
+            </span>
+            <Warnings items={calibration.warnings} />
           </div>
+        )}
+        {calibrated && (
+          <>
+            <div className={styles.stats}>
+              <Stat
+                label="Calibration windows"
+                value={calibration.calibration_windows ?? "—"}
+                note="30-second EDA windows from the rest baseline"
+              />
+              <Stat
+                label="Calibration span"
+                value={
+                  calibration.calibration_duration_s == null
+                    ? "—"
+                    : `${Number(calibration.calibration_duration_s).toFixed(0)} s`
+                }
+                note="These windows set the rest reference, so they do not measure accuracy."
+              />
+            </div>
+            <Warnings items={calibration.warnings} />
+          </>
         )}
       </section>
 
       {TASKS.map((t, i) => {
         const r = results[t.id];
+        const abstained = Boolean(r?.abstained);
         return (
           <section key={t.id} className={styles.step} aria-labelledby={`rec-${t.id}`}>
             <div className={styles.stepHead}>
               <h2 id={`rec-${t.id}`} className={styles.stepTitle}>
                 {i + 3}. {t.name} ({t.id})
               </h2>
-              {r && <span className={styles.done}>Analysed</span>}
+              {r && !abstained && <span className={styles.done}>Analysed</span>}
             </div>
             <p className={styles.hint}>At least 40 seconds. Needs a calibrated baseline first.</p>
             <FilePair
-              disabled={!calibration || working}
+              disabled={!calibrated || working}
               onBvp={(f) => setFile(t.id, "bvp", f)}
               onEda={(f) => setFile(t.id, "eda", f)}
             />
@@ -290,28 +341,38 @@ export default function RecordingAnalysis() {
                 type="button"
                 className={styles.btn}
                 onClick={() => analyse(t.id)}
-                disabled={!calibration || working || !ready(t.id)}
+                disabled={!calibrated || working || !ready(t.id)}
               >
                 {busy === t.id ? "Analysing…" : "Analyse"}
               </button>
             </div>
-            {r && (
+            {r && abstained && (
+              <div className={styles.error} role="status">
+                <span>
+                  No result for this recording ({words(r.status)}). The signal did not pass the
+                  quality checks, so the model did not make a prediction.
+                </span>
+                <Warnings items={r.warnings} />
+              </div>
+            )}
+            {r && !abstained && (
               <>
                 <div className={styles.stats}>
                   <Stat
-                    label="Reliable windows"
-                    value={`${r.summary.reliable_windows} of ${r.summary.total_windows}`}
-                    note="Unreliable windows are never counted as non-stress."
+                    label="Windows analysed"
+                    value={r.summary.total_windows}
+                    note="Signal quality is checked for the whole recording, not per window."
                   />
                   <Stat
-                    label="Stress windows"
+                    label="Distress windows"
                     value={percent(r.summary.stress_percentage)}
-                    note="Share of the reliable windows"
-                    tone={r.summary.dominant_state === "stress" ? "high" : undefined}
+                    note="Share of the analysed windows"
+                    tone={isDistress(r.summary.dominant_state) ? "high" : undefined}
                   />
-                  <Stat label="Mean P(stress)" value={prob(r.summary.mean_stress_probability)} />
+                  <Stat label="Mean decision score" value={score(r.summary.mean_decision_score)} />
                   <Stat label="Dominant state" value={words(r.summary.dominant_state)} />
                 </div>
+                <Warnings items={r.warnings} />
                 <WindowTable windows={r.windows} />
               </>
             )}
@@ -328,14 +389,21 @@ export default function RecordingAnalysis() {
             {busy === "summary" ? "Loading…" : "Show session summary"}
           </button>
         </div>
-        {profile && (
+        {summary && (
           <>
-            <div className={styles.stats}>
-              <Stat label="Baseline (T1)" value={prob(profile.baseline_t1_prob)} />
-              <Stat label="Speech (T2)" value={prob(profile.speech_t2_prob)} note={`Change vs baseline: ${profile.delta_t2_vs_baseline ?? "—"}`} />
-              <Stat label="Arithmetic (T3)" value={prob(profile.arithmetic_t3_prob)} note={`Change vs baseline: ${profile.delta_t3_vs_baseline ?? "—"}`} />
-              <Stat label="Reactivity" value={words(profile.reactivity_class)} />
-            </div>
+            {taskSummaries.length > 0 && (
+              <div className={styles.stats}>
+                {taskSummaries.map((s) => (
+                  <Stat
+                    key={s.task_id}
+                    label={`${s.task_name} (${s.task_id})`}
+                    value={percent(s.stress_percentage)}
+                    note={`Distress windows · mean decision score ${score(s.mean_decision_score)}`}
+                    tone={isDistress(s.dominant_state) ? "high" : undefined}
+                  />
+                ))}
+              </div>
+            )}
             {summary.interpretation && <p className={styles.hint}>{summary.interpretation}</p>}
           </>
         )}
