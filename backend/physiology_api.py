@@ -665,7 +665,20 @@ async def upload_baseline(session_id: str, request: Request):
         raise HTTPException(status_code=500, detail=f"Signal ingestion failed: {sanitize_error_message(str(e))}")
 
     with _STORE_LOCK:
+        # Store replacement T1 baseline
         sess.t1_data = ingested
+
+        # Invalidate previous calibration
+        sess.is_calibrated = False
+        sess.calibration_result = None
+        sess.defensive_inference = None
+        sess.v3_inference = None
+        sess.calibration_diagnostics = {}
+        sess.calibration_warnings = []
+
+        # Clear results generated using the previous baseline
+        sess.task_summaries.clear()
+
         sess.status = "baseline_uploaded"
         sess.touch()
 
