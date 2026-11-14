@@ -1,9 +1,11 @@
 // Client for the physiology FastAPI backend (backend/physiology_api.py).
 // Paths and field names follow docs/PHYSIOLOGY_API_CONTRACT.md and backend/schemas/physiology.py.
-// Upload, calibrate, task and summary calls are added once their formats are confirmed.
 const BASE = (import.meta.env.VITE_PHYSIOLOGY_API_URL ?? "").replace(/\/+$/, "");
 
 export const apiConfigured = BASE !== "";
+
+// The model every session uses. v5 is the EDA-only SVM (BVP is accepted but not used).
+export const MODEL_VERSION = "v5";
 
 export class ApiError extends Error {
   constructor(message, { status = null, kind = "http" } = {}) {
@@ -13,6 +15,17 @@ export class ApiError extends Error {
     // "not_configured" | "network" | "session_expired" | "http"
     this.kind = kind;
   }
+}
+
+// FastAPI sends a string for most errors and a list of {loc, msg} for validation errors.
+function describeDetail(detail, status) {
+  if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) {
+    const msgs = detail.map((d) => d?.msg).filter(Boolean);
+    if (msgs.length) return msgs.join(" ");
+  }
+  if (detail) return JSON.stringify(detail);
+  return `Request failed (${status})`;
 }
 
 async function request(path, options = {}) {
@@ -42,13 +55,7 @@ async function request(path, options = {}) {
       });
     }
     const detail = body?.detail ?? body?.message ?? body?.error;
-    const text =
-      typeof detail === "string"
-        ? detail
-        : detail
-          ? JSON.stringify(detail)
-          : `Request failed (${res.status})`;
-    throw new ApiError(text, { status: res.status });
+    throw new ApiError(describeDetail(detail, res.status), { status: res.status });
   }
   return body;
 }
@@ -61,15 +68,6 @@ const postJson = (data) => ({
 
 const sid = (id) => encodeURIComponent(id);
 
-export const getHealth = () => request("/health");
-
-export const createSession = (participantId, notes) =>
-  request("/sessions", postJson({ participant_id: participantId, notes: notes || null }));
-
-export const getSessionStatus = (sessionId) => request(`/sessions/${sid(sessionId)}/status`);
-
-export const deleteSession = (sessionId) =>
-  request(`/sessions/${sid(sessionId)}`, { method: "DELETE" });
 const SIGNAL_TASKS = ["T2", "T3"];
 
 function recordingForm(bvpFile, edaFile, participantId) {
@@ -80,6 +78,23 @@ function recordingForm(bvpFile, edaFile, participantId) {
   return form;
 }
 
+export const getHealth = () => request("/health");
+
+export const createSession = (participantId, notes, modelVersion = MODEL_VERSION) =>
+  request(
+    "/sessions",
+    postJson({
+      participant_id: participantId,
+      notes: notes || null,
+      model_version: modelVersion,
+    }),
+  );
+
+export const getSessionStatus = (sessionId) => request(`/sessions/${sid(sessionId)}/status`);
+
+export const deleteSession = (sessionId) =>
+  request(`/sessions/${sid(sessionId)}`, { method: "DELETE" });
+
 // Rest baseline (T1). Needs at least 180 s of continuous BVP (64 Hz) and EDA (4 Hz).
 // No Content-Type header is set on purpose: the browser adds the multipart boundary itself.
 export const uploadBaseline = (sessionId, bvpFile, edaFile, participantId) =>
@@ -87,6 +102,10 @@ export const uploadBaseline = (sessionId, bvpFile, edaFile, participantId) =>
     method: "POST",
     body: recordingForm(bvpFile, edaFile, participantId),
   });
+
+// Fits the rest calibrator on the uploaded T1 baseline. No request body.
+export const calibrateBaseline = (sessionId) =>
+  request(`/sessions/${sid(sessionId)}/baseline/calibrate`, { method: "POST" });
 
 // Stress task inference (T2 speech, T3 arithmetic). Needs at least 40 s.
 // The server returns 400 if the baseline has not been calibrated first.
@@ -100,8 +119,6 @@ export function runTask(sessionId, taskId, bvpFile, edaFile, participantId) {
   });
 }
 
-// Cross-task summary: T1 vs T2 vs T3 with reactivity deltas.
+// Cross-task summary. With v5 this holds per-task results and an explanation,
+// not probability-based reactivity.
 export const getSummary = (sessionId) => request(`/sessions/${sid(sessionId)}/summary`);
-// Fits the rest calibrator on the uploaded T1 baseline. No request body.
-export const calibrateBaseline = (sessionId) =>
-  request(`/sessions/${sid(sessionId)}/baseline/calibrate`, { method: "POST" });
