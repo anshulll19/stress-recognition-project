@@ -149,8 +149,18 @@ export default function RecordingAnalysis() {
     );
   }
 
-  const setFile = (slot, kind, file) =>
+  // Everything derived from the baseline is stale as soon as the baseline changes.
+  // The backend drops the calibration when a replacement baseline is uploaded.
+  const clearBaselineDerived = () => {
+    setCalibration(null);
+    setResults({});
+    setSummary(null);
+  };
+
+  const setFile = (slot, kind, file) => {
+    if (slot === "baseline") clearBaselineDerived();
     setFiles((prev) => ({ ...prev, [slot]: { ...prev[slot], [kind]: file } }));
+  };
   const ready = (slot) => Boolean(files[slot]?.bvp && files[slot]?.eda);
 
   async function step(name, fn) {
@@ -182,6 +192,7 @@ export default function RecordingAnalysis() {
 
   const calibrate = () =>
     step("baseline", async () => {
+      clearBaselineDerived();
       await uploadBaseline(session.session_id, files.baseline.bvp, files.baseline.eda, session.participant_id);
       setCalibration(await calibrateBaseline(session.session_id));
     });
