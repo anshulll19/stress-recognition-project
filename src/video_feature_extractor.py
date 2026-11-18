@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import math
+import mediapipe as mp
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Union
 
@@ -211,7 +212,7 @@ class VideoFeatureExtractor:
                 ms = max(int(round(ts * 1000)), last_ms + 1)
                 last_ms = ms
                 rgb = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)
-                image = mp_python.Image(image_format=mp_python.ImageFormat.SRGB, data=rgb)
+                image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
                 result = landmarker.detect_for_video(image, ms)
                 if not result.face_landmarks:
                     records.append((ts, None))
