@@ -1,8 +1,17 @@
+import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { TABS } from "../content/tabs";
 import styles from "./Layout.module.css";
 
+// What the data on screen comes from. Pages change it through the Outlet context.
+const SOURCES = {
+  replay: "Benchmark replay active",
+  recording: "Uploaded recording · physiology API",
+};
+
 export default function Layout() {
+  const [source, setSource] = useState("replay");
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -36,15 +45,16 @@ export default function Layout() {
           ))}
         </nav>
 
-        {/* Always visible: this build shows benchmark replay data, not live sensing. */}
-        <div className={styles.status}>
+        {/* Always visible, and it must match the data on screen: replay of stored
+            benchmark results, or a recording analysed by the physiology API. */}
+        <div className={styles.status} data-source={source} role="status">
           <span className={styles.statusDot} aria-hidden="true" />
-          Benchmark replay active
+          {SOURCES[source]}
         </div>
       </header>
 
       <main>
-        <Outlet />
+        <Outlet context={{ setSource }} />
       </main>
     </div>
   );
