@@ -259,6 +259,7 @@ def main():
             model = make_model()
             model.fit(X_train, y_train)
             y_pred = model.predict(X_test)
+            decision_scores = model.decision_function(X_test)
 
             metrics = calculate_metrics(y_test, y_pred)
 
@@ -282,6 +283,8 @@ def main():
                     "end_s": float(row["end_s"]),
                     "true_label": int(y_test[index]),
                     "predicted_label": int(y_pred[index]),
+                    "decision_score": float(decision_scores[index]),
+                    "score_type": "raw_svm_decision_function",
                 })
 
             print(
@@ -395,7 +398,7 @@ def main():
 
     print("\n" + "=" * 75)
     print("POOLED RESULTS")
-    print("=" * 75)
+    print("=" * 75) 
     print(pooled_df.round(4).to_string(index=False))
 
     print("\nPAIRED PARTICIPANT DIFFERENCES (V5.1 minus V5)")
