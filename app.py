@@ -19,10 +19,10 @@ import pandas as pd
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-
+from demo.adapters.video_adapter import VideoStressAdapter
 from demo.adapters.ubfc_adapter import UBFCPhysInferenceAdapter
 from demo.adapters.wesad_adapter import WESADInferenceAdapter
-from demo.adapters.video_adapter import VideoInferenceAdapter
+from demo.adapters.video_adapter import VideoStressAdapter as VideoInferenceAdapter
 from demo.adapters.upload_video_adapter import UploadVideoAdapter
 from demo.adapters.fusion_adapter import MultimodalFusionAdapter
 from demo.adapters.trend_adapter import TemporalTrendAdapter
