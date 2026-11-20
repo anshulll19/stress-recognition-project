@@ -15,7 +15,8 @@ df["p"] = np.nan
 for s in subjects:
     tr, te = df["subject_id"] != s, df["subject_id"] == s
     med = df.loc[tr, feats].median()
-    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    clf = RandomForestClassifier(n_estimators=200, max_depth=8,
+                             class_weight="balanced", random_state=42)
     clf.fit(df.loc[tr, feats].fillna(med), df.loc[tr, "label"])
     df.loc[te, "p"] = clf.predict_proba(df.loc[te, feats].fillna(med))[:, 1]
 
