@@ -1,189 +1,187 @@
-"""Video-based facial distress recognition adapter using Random Forest baseline."""
-import json
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+import os
 import joblib
 import numpy as np
 import pandas as pd
 
-from demo.adapters.base import BaseInferenceAdapter, PredictionResult, ValidationResult
+from pathlib import Path
+
+from src.video_feature_extractor import VideoFeatureExtractor
 
 
-class VideoInferenceAdapter(BaseInferenceAdapter):
-    """Adapter for offline and recorded video facial distress recognition.
+class VideoStressAdapter:
+    def __init__(
+        self,
+        model_path="models/video_distress_upperface.joblib",
+        landmarker_path="models/face_landmarker.task",
+    ):
+        model_path = Path(model_path)
 
-    Uses the 23-feature Random Forest baseline (models/video_distress_baseline.joblib)
-    trained on UBFC-Phys video recordings across 18 participants.
-    """
+        if model_path.is_dir():
+            model_path = model_path / "models" / "video_distress_upperface.joblib"
 
-    CLASS_NAMES = {
-        0: "Non-stress (Rest Task T1 Proxy)",
-        1: "Distress / Stress-task (Speech T2 / Math T3 Proxy)",
-    }
+        if not model_path.is_file():
+            model_path = Path("models/video_distress_upperface.joblib")
 
-    def __init__(self, project_root: Optional[Path] = None):
-        self.root = project_root or Path(__file__).resolve().parents[2]
-        self.model_path = self.root / "models/video_distress_baseline.joblib"
-        self.feature_names_path = self.root / "models/video_feature_names.json"
-        self.metadata_path = self.root / "models/video_model_metadata.json"
-        self.windows_path = self.root / "results/video/video_windows.csv"
-        self.landmarker_path = self.root / "models/face_landmarker.task"
+        if not model_path.is_file():
+            raise FileNotFoundError(f"Model bundle not found: {model_path}")
 
-        self._model = None
-        self._feature_names = None
-        self._metadata = None
-        self._windows_df = None
+        if not Path(landmarker_path).is_file():
+            raise FileNotFoundError(
+                f"MediaPipe landmarker not found: {landmarker_path}"
+            )
 
-        if self.feature_names_path.exists():
-            with open(self.feature_names_path, "r") as f:
-                self._feature_names = json.load(f)
+        bundle = joblib.load(model_path)
 
-        if self.metadata_path.exists():
-            with open(self.metadata_path, "r") as f:
-                self._metadata = json.load(f)
+        required_keys = {"model", "scaler", "features"}
+        if not required_keys.issubset(bundle):
+            raise ValueError(f"Model bundle must contain {required_keys}")
 
-    @property
-    def dataset_name(self) -> str:
-        return "UBFC-Phys Video (Facial & Behavioral Analysis)"
+        self.model = bundle["model"]
+        self.scaler = bundle["scaler"]
+        self.feature_cols = list(bundle["features"])
 
-    @property
-    def expected_input_shape(self) -> Tuple[Optional[int], ...]:
-        return (23,)
+        if len(self.feature_cols) != 19:
+            raise ValueError(
+                f"Expected 19 upper-face features, got {len(self.feature_cols)}"
+            )
 
-    @property
-    def sampling_rate_hz(self) -> Dict[str, float]:
-        return {"Video": 30.0}
+        if self.scaler.n_features_in_ != len(self.feature_cols):
+            raise ValueError("Scaler feature count does not match model schema.")
 
-    @property
-    def feature_names(self) -> List[str]:
-        if self._feature_names is None and self.feature_names_path.exists():
-            with open(self.feature_names_path, "r") as f:
-                self._feature_names = json.load(f)
-        return list(self._feature_names or [])
+        if self.model.n_features_in_ != len(self.feature_cols):
+            raise ValueError("Model feature count does not match model schema.")
 
-    def is_model_available(self) -> bool:
-        return self.model_path.exists() and self.feature_names_path.exists()
+        if 1 not in self.model.classes_:
+            raise ValueError("Model does not contain distress class 1.")
 
-    def get_metadata(self) -> Optional[Dict[str, Any]]:
-        return self._metadata
+        self.distress_class_index = list(self.model.classes_).index(1)
 
-    def load_model(self):
-        """Lazy load and patch scikit-learn 1.9 compatibility."""
-        if self._model is None and self.is_model_available():
-            pipeline = joblib.load(self.model_path)
-            # Patch SimpleImputer missing attribute across scikit-learn versions
-            if hasattr(pipeline, "named_steps") and "simpleimputer" in pipeline.named_steps:
-                imputer = pipeline.named_steps["simpleimputer"]
-                if not hasattr(imputer, "_fill_dtype") and hasattr(imputer, "statistics_"):
-                    imputer._fill_dtype = imputer.statistics_.dtype
-            self._model = pipeline
-        return self._model
-
-    def load_windows(self) -> pd.DataFrame:
-        """Load and cache precomputed video windows."""
-        if self._windows_df is None:
-            if not self.windows_path.exists():
-                raise FileNotFoundError(f"Video windows file not found at {self.windows_path}")
-            self._windows_df = pd.read_csv(self.windows_path)
-        return self._windows_df
-
-    def get_subjects(self) -> List[str]:
-        """Return list of subject IDs in recorded video dataset (e.g. 's3'..'s20')."""
-        df = self.load_windows()
-        return sorted(df["subject_id"].unique().tolist())
-
-    def get_subject_windows(self, subject_id: str) -> pd.DataFrame:
-        """Return all 54 windows for a given subject."""
-        df = self.load_windows()
-        return df[df["subject_id"] == subject_id].reset_index(drop=True)
-
-    def validate_input(self, data: Any) -> ValidationResult:
-        """Validate 23-feature vector or single-row DataFrame."""
-        errors = []
-        warnings = []
-
-        feats = self.feature_names
-
-        if isinstance(data, pd.DataFrame):
-            missing = [f for f in feats if f not in data.columns]
-            if missing:
-                errors.append(f"Missing required feature columns: {missing[:5]}...")
-            if len(data) == 0:
-                errors.append("DataFrame is empty.")
-            arr = data[feats].astype(float).values if not missing else None
-        elif isinstance(data, pd.Series):
-            missing = [f for f in feats if f not in data.index]
-            if missing:
-                errors.append(f"Missing required features: {missing[:5]}...")
-            arr = data[feats].astype(float).values.reshape(1, -1) if not missing else None
-        elif isinstance(data, (list, tuple, np.ndarray)):
-            arr = np.asarray(data, dtype=float)
-            if arr.ndim == 1:
-                if len(arr) != 23:
-                    errors.append(f"Expected 23 features, got length {len(arr)}.")
-                arr = arr.reshape(1, -1)
-            elif arr.ndim == 2:
-                if arr.shape[1] != 23:
-                    errors.append(f"Expected shape (N, 23), got {arr.shape}.")
-            else:
-                errors.append(f"Expected 1D or 2D array, got {arr.ndim}D.")
-        else:
-            errors.append(f"Unsupported data type: {type(data)}")
-            arr = None
-
-        if arr is not None:
-            if not np.all(np.isfinite(arr)):
-                warnings.append("Feature vector contains NaN or Inf values; imputer will handle if valid.")
-
-        return ValidationResult(
-            is_valid=(len(errors) == 0),
-            errors=errors,
-            warnings=warnings,
-            metadata={"expected_features": len(feats)}
+        self.extractor = VideoFeatureExtractor(
+            model_path=landmarker_path
         )
 
-    def predict(self, window_data: Any, metadata: Optional[Dict[str, Any]] = None) -> PredictionResult:
-        """Perform Random Forest inference on a validated 23-feature vector."""
-        val = self.validate_input(window_data)
-        if not val.is_valid:
-            raise ValueError(f"Input validation failed: {'; '.join(val.errors)}")
+        print(f"Loaded video model: {model_path}")
+        print(f"Loaded {len(self.feature_cols)} model features.")
 
-        model = self.load_model()
-        feats = self.feature_names
+    def process_video(self, video_path, participant_id="runtime_user"):
+        if not os.path.isfile(video_path):
+            raise FileNotFoundError(f"Video not found: {video_path}")
 
-        if isinstance(window_data, pd.DataFrame):
-            X = window_data[feats].iloc[:1]
-        elif isinstance(window_data, pd.Series):
-            X = window_data[feats].to_frame().T
-        else:
-            arr = np.asarray(window_data, dtype=float)
-            if arr.ndim == 1:
-                arr = arr.reshape(1, -1)
-            X = pd.DataFrame(arr[:1], columns=feats)
-
-        probs = model.predict_proba(X)[0]
-        predicted_class = int(np.argmax(probs))
-        confidence = float(probs[predicted_class])
-
-        meta = metadata or {}
-        ground_truth = meta.get("ground_truth")
-        gt_label = self.CLASS_NAMES.get(ground_truth) if ground_truth is not None else None
-
-        warnings = list(val.warnings)
-        warnings.append(
-            "Video baseline notice: High performance (Bal-Acc 0.967) strongly correlates with mouth/speech movement "
-            "during speech task (T2) vs rest (T1). Do not treat as validated internal psychological stress measurement."
+        windows_df = self.extractor.extract_video_features(
+            video_path,
+            participant_id=participant_id,
         )
 
-        return PredictionResult(
-            predicted_class=predicted_class,
-            class_label=self.CLASS_NAMES[predicted_class],
-            probabilities=probs,
-            confidence_score=confidence,
-            is_calibrated=False,
-            ground_truth=ground_truth,
-            ground_truth_label=gt_label,
-            window_metadata=meta,
-            signal_quality_ok=(meta.get("detection_fraction", 1.0) >= 0.8),
-            warnings=warnings,
+        if windows_df.empty:
+            raise ValueError("No video windows were extracted.")
+
+        # Confirm the exact model feature schema.
+        missing = [
+            col for col in self.feature_cols
+            if col not in windows_df.columns
+        ]
+
+        if missing:
+            raise ValueError(f"Missing model features: {missing}")
+
+        # Use the extractor's actual reliability field.
+        reliable_mask = windows_df["reliable"].fillna(False).astype(bool)
+
+        reliable_df = windows_df.loc[reliable_mask].copy()
+
+        # Initialize every window, including unreliable ones.
+        window_outputs = []
+
+        for _, row in windows_df.iterrows():
+            window_outputs.append({
+                "participant_id": str(row["participant_id"]),
+                "window_index": int(row["window_index"]),
+                "start_s": float(row["start_s"]),
+                "end_s": float(row["end_s"]),
+                "detection_fraction": float(row["detection_fraction"]),
+                "reliable": bool(row["reliable"]),
+                "prediction": None,
+                "stress_probability_score": None,
+                "smoothed_probability_score": None,
+            })
+
+        if reliable_df.empty:
+            return {
+                "participant_id": participant_id,
+                "status": "warning",
+                "message": "No windows passed the video reliability checks.",
+                "total_windows": len(windows_df),
+                "reliable_windows": 0,
+                "unreliable_windows": len(windows_df),
+                "window_predictions": window_outputs,
+            }
+
+        # Never silently fill missing features with zero.
+        X_live = reliable_df[self.feature_cols].to_numpy(dtype=float)
+
+        if not np.isfinite(X_live).all():
+            raise ValueError(
+                "Reliable video windows contain NaN or infinite model features."
+            )
+
+        X_scaled = self.scaler.transform(X_live)
+
+        predictions = self.model.predict(X_scaled)
+        scores = self.model.predict_proba(X_scaled)[
+            :, self.distress_class_index
+        ]
+
+        # These are RF class scores, not calibrated probabilities.
+        reliable_df["prediction"] = predictions.astype(int)
+        reliable_df["stress_probability_score"] = scores
+
+        reliable_df["smoothed_probability_score"] = (
+            reliable_df["stress_probability_score"]
+            .rolling(window=3, min_periods=1)
+            .mean()
         )
+
+        # Map predictions back to their original window positions.
+        for position, (_, row) in enumerate(reliable_df.iterrows()):
+            original_index = windows_df.index.get_loc(row.name)
+
+            window_outputs[original_index].update({
+                "prediction": int(row["prediction"]),
+                "stress_probability_score": float(
+                    row["stress_probability_score"]
+                ),
+                "smoothed_probability_score": float(
+                    row["smoothed_probability_score"]
+                ),
+            })
+
+        mean_score = float(
+            reliable_df["smoothed_probability_score"].mean()
+        )
+
+        return {
+            "participant_id": participant_id,
+            "status": "success",
+            "total_windows": len(windows_df),
+            "reliable_windows": len(reliable_df),
+            "unreliable_windows": len(windows_df) - len(reliable_df),
+            "window_predictions": window_outputs,
+            "session_mean_stress_probability_score": mean_score,
+            "score_interpretation": (
+                "Uncalibrated Random Forest class-1 score; "
+                "not a calibrated probability."
+            ),
+            "overall_session_assessment": (
+                "High Stress Indicator"
+                if mean_score > 0.5
+                else "Calm / Baseline"
+            ),
+        }
+
+
+VideoInferenceAdapter = VideoStressAdapter
+
+
+if __name__ == "__main__":
+    adapter = VideoStressAdapter()
+    print("Video inference adapter initialized successfully.")
